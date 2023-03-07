@@ -1,0 +1,41 @@
+import System;
+
+module Program {
+  let Main(args:array[string]) = {
+    const n:int = 100;
+    var primes:array[bool] = array[bool](n + 1);
+
+    for i in (2 -> n) {
+      primes[i] = true;
+    }
+    for i in (2 -> n) where i * i < n {
+      if primes[i] is true {
+        var j = i * i;
+        while (j < n) {
+          primes[j] = false;
+          j += i;
+        }
+      }
+    }
+    for i in (2 -> n) where primes[i] {
+      Print(i.string);
+    }
+  }
+}
+
+let isEven (x:int) : bool = {
+  x mod 2 is 0
+}
+
+let isOdd (x:int) : bool = { isEven(x) is not true }
+
+const testTwenty:bool = isEven(20);
+const testNineteen = isEven(19);
+const nullTest:Any = None;
+var defaultTest:bool;
+var zero = 0;
+
+
+if testNineteen is testTwenty {
+  Print("how??!");
+}
