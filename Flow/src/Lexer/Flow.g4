@@ -55,7 +55,7 @@ statement: variable_declaration
          | function_call_statement
          | statement_block;
 
-variable_declaration: 'let' identifier ':' type '=' variable_value ';';
+variable_declaration: 'var' identifier ':' type '=' variable_value ';';
 
 variable_value: expression
               | 'array' '[' type ']' '(' expression ')'
@@ -94,37 +94,40 @@ argument_list: expression (',' expression)*;
 
 statement_block: '{' statement* '}';
 
+unary_operation: NOT expression;
+
+expression: logical_or;
+
+logical_or: logical_and (OR logical_and)*;
+
+logical_and: equality (AND equality)*;
+
+equality: relational ((EQ | NEQ) relational)*;
+
+relational: additive ((LT | LTE | GT | GTE) additive)*;
+
+additive: multiplicative ((ADD | SUB) multiplicative)*;
+
+multiplicative: expression_value ((MUL | DIV | MOD) expression_value)*;
+
 expression_value: literal
     | identifier
     | unary_operation
     | function_call_expression
     | '(' expression ')';
 
-expression: expression_value
-    | multiplicative_operation;
+function_declaration: 'let' identifier '(' parameter_list? ')' ':' type? '=' statement_block;
 
-multiplicative_operation: expression_value ( MUL | DIV | MOD ) expression_value;
+parameter_list: '(' (parameter (',' parameter)*)? ')';
 
-additive_operation: multiplicative_operation ( ADD | SUB ) multiplicative_operation;
+parameter: identifier ':' type;
 
-relational_operation: additive_operation ( LT | LTE | GT | GTE ) additive_operation;
-
-equality_operation: relational_operation ( EQ | NEQ ) relational_operation;
-
-logical_and_operation: equality_operation AND equality_operation;
-
-logical_or_operation: logical_and_operation OR logical_and_operation;
+function_call_expression: identifier '(' argument_list? ')';
 
 literal: INTEGER
     | TRUE
     | FALSE
     | STRING;
-
-unary_operation: NOT expression;
-
-binary_operation: expression ( ADD | SUB | MUL | DIV | MOD | EQ | NEQ | LT | LTE | GT | GTE | AND | OR ) expression;
-
-function_call_expression: identifier '(' argument_list? ')';
 
 /* Lexer Helpers */
 identifier: IDENTIFIER;
@@ -146,5 +149,3 @@ ERR_TOKEN: ~[\r\n]; // Match any token except newline
 // Equality: is, is not
 // Logical And: and
 // Logical Or: or
-
-// TODO: Add operator precedence to binary_operation rule.

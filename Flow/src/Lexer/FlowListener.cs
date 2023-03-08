@@ -221,15 +221,15 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement_block([NotNull] FlowParser.Statement_blockContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.expression_value"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.unary_operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterExpression_value([NotNull] FlowParser.Expression_valueContext context);
+	void EnterUnary_operation([NotNull] FlowParser.Unary_operationContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.expression_value"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.unary_operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitExpression_value([NotNull] FlowParser.Expression_valueContext context);
+	void ExitUnary_operation([NotNull] FlowParser.Unary_operationContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.expression"/>.
 	/// </summary>
@@ -241,95 +241,105 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExpression([NotNull] FlowParser.ExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.multiplicative_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.logical_or"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterMultiplicative_operation([NotNull] FlowParser.Multiplicative_operationContext context);
+	void EnterLogical_or([NotNull] FlowParser.Logical_orContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.multiplicative_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.logical_or"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitMultiplicative_operation([NotNull] FlowParser.Multiplicative_operationContext context);
+	void ExitLogical_or([NotNull] FlowParser.Logical_orContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.additive_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.logical_and"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterAdditive_operation([NotNull] FlowParser.Additive_operationContext context);
+	void EnterLogical_and([NotNull] FlowParser.Logical_andContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.additive_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.logical_and"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitAdditive_operation([NotNull] FlowParser.Additive_operationContext context);
+	void ExitLogical_and([NotNull] FlowParser.Logical_andContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.relational_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.equality"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterRelational_operation([NotNull] FlowParser.Relational_operationContext context);
+	void EnterEquality([NotNull] FlowParser.EqualityContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.relational_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.equality"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitRelational_operation([NotNull] FlowParser.Relational_operationContext context);
+	void ExitEquality([NotNull] FlowParser.EqualityContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.equality_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.relational"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterEquality_operation([NotNull] FlowParser.Equality_operationContext context);
+	void EnterRelational([NotNull] FlowParser.RelationalContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.equality_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.relational"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitEquality_operation([NotNull] FlowParser.Equality_operationContext context);
+	void ExitRelational([NotNull] FlowParser.RelationalContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.logical_and_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.additive"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterLogical_and_operation([NotNull] FlowParser.Logical_and_operationContext context);
+	void EnterAdditive([NotNull] FlowParser.AdditiveContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.logical_and_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.additive"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitLogical_and_operation([NotNull] FlowParser.Logical_and_operationContext context);
+	void ExitAdditive([NotNull] FlowParser.AdditiveContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.logical_or_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.multiplicative"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterLogical_or_operation([NotNull] FlowParser.Logical_or_operationContext context);
+	void EnterMultiplicative([NotNull] FlowParser.MultiplicativeContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.logical_or_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.multiplicative"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitLogical_or_operation([NotNull] FlowParser.Logical_or_operationContext context);
+	void ExitMultiplicative([NotNull] FlowParser.MultiplicativeContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.literal"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.expression_value"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterLiteral([NotNull] FlowParser.LiteralContext context);
+	void EnterExpression_value([NotNull] FlowParser.Expression_valueContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.literal"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.expression_value"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitLiteral([NotNull] FlowParser.LiteralContext context);
+	void ExitExpression_value([NotNull] FlowParser.Expression_valueContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.unary_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.function_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterUnary_operation([NotNull] FlowParser.Unary_operationContext context);
+	void EnterFunction_declaration([NotNull] FlowParser.Function_declarationContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.unary_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.function_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitUnary_operation([NotNull] FlowParser.Unary_operationContext context);
+	void ExitFunction_declaration([NotNull] FlowParser.Function_declarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.binary_operation"/>.
+	/// Enter a parse tree produced by <see cref="FlowParser.parameter_list"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterBinary_operation([NotNull] FlowParser.Binary_operationContext context);
+	void EnterParameter_list([NotNull] FlowParser.Parameter_listContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.binary_operation"/>.
+	/// Exit a parse tree produced by <see cref="FlowParser.parameter_list"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitBinary_operation([NotNull] FlowParser.Binary_operationContext context);
+	void ExitParameter_list([NotNull] FlowParser.Parameter_listContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameter([NotNull] FlowParser.ParameterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameter([NotNull] FlowParser.ParameterContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.function_call_expression"/>.
 	/// </summary>
@@ -340,6 +350,16 @@ public interface IFlowListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_call_expression([NotNull] FlowParser.Function_call_expressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLiteral([NotNull] FlowParser.LiteralContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLiteral([NotNull] FlowParser.LiteralContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.identifier"/>.
 	/// </summary>
