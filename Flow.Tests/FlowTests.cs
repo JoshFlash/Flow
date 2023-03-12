@@ -18,20 +18,23 @@ public class FlowTests
     {
         string input = "var x: int = 5;";
         FlowDriver driver = new FlowDriver(input);
+        
         var tree = driver.ParseVariableDecl();
         string result = tree.ToStringTree(driver.Parser);
         _testOutputHelper.WriteLine(result);
-        Console.WriteLine(result);
+        
         Assert.False(string.IsNullOrEmpty(result));
     }
 
     [Fact]
     public void TestAST()
     {
-        string input = "import module1; module test { var x: int = 10; }";
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../Flow/test.flo");
+        string input = File.ReadAllText(filePath);
         FlowDriver driver = new FlowDriver(input);
 
         var listener = driver.WalkTree();
-        _testOutputHelper.WriteLine(listener.AST.ToString());
+        string result = listener.AST.ToString();
+        _testOutputHelper.WriteLine(result);
     }
 }

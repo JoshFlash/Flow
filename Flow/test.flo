@@ -5,37 +5,39 @@ module Program {
     const n:int = 100;
     var primes:array[bool] = array[bool](n + 1);
 
-    for i in (2 -> n) {
+    for i in 2 -> n {
       primes[i] = true;
     }
-    for i in (2 -> n) where i * i < n {
+    for i in 2 -> n where i * i < n {
       if primes[i] is true {
-        var j = i * i;
+        var j:int = i * i;
         while (j < n) {
           primes[j] = false;
-          j += i;
+          j = j + i;
         }
       }
     }
-    for i in (2 -> n) where primes[i] {
+    for i in 2 -> n where primes[i] {
       Print(i.string);
     }
   }
 }
 
-let IsEven (x:int) : bool = {
-  x mod 2 is 0
-}
+  
+# todo
 
-let IsOdd (x:int) : bool = { IsEven(x) is not true }
+  let IsEven (x:int) : bool = {
+    x mod 2 is 0
+  }
 
-const testTwenty:bool = IsEven(20);
-const testNineteen = IsEven(19);
-const nullTest:Any = None;
-var defaultTest:bool;
-var zero = 0;
+  let IsOdd (x:int) : bool = { IsEven(x) is not true }
 
-
-if testNineteen is testTwenty {
-  Print("how??!");
-}
+  const testTwenty:bool = IsEven(20);
+  const testNineteen = IsEven(19);
+  const nullTest:Any = None;
+  var defaultTest:bool;
+  var zero = 0;
+  if testNineteen is testTwenty {
+    Print("how??!");
+  }
+#
