@@ -23,14 +23,14 @@ module Program {
   }
 }
 
-let isEven (x:int) : bool = {
+let IsEven (x:int) : bool = {
   x mod 2 is 0
 }
 
-let isOdd (x:int) : bool = { isEven(x) is not true }
+let IsOdd (x:int) : bool = { IsEven(x) is not true }
 
-const testTwenty:bool = isEven(20);
-const testNineteen = isEven(19);
+const testTwenty:bool = IsEven(20);
+const testNineteen = IsEven(19);
 const nullTest:Any = None;
 var defaultTest:bool;
 var zero = 0;
