@@ -28,7 +28,7 @@ public class FlowTests
     [Fact]
     public void TestAST()
     {
-        string input = "import module1; module test { x = 10; }";
+        string input = "import module1; module test { var x: int = 10; }";
         FlowDriver driver = new FlowDriver(input);
 
         var listener = driver.WalkTree();
