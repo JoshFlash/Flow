@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using Antlr4.Runtime;
 
 namespace Flow
 {
@@ -7,11 +8,13 @@ namespace Flow
     {
         public string Text { get; }
         public List<ASTNode> Children { get; }
+        public ParserRuleContext Context { get; }
 
-        public ASTNode(string text, List<ASTNode> children)
+        public ASTNode(string text, List<ASTNode> children, ParserRuleContext context)
         {
             Text = text;
             Children = children;
+            Context = context;
         }
         
         public override string ToString()
