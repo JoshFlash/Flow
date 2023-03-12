@@ -17,10 +17,21 @@ public class FlowTests
     public void TestDriver()
     {
         string input = "var x: int = 5;";
-        FlowDriver driver = new FlowDriver();
-        var result = driver.Parse(input);
+        FlowDriver driver = new FlowDriver(input);
+        var tree = driver.ParseVariableDecl();
+        string result = tree.ToStringTree(driver.Parser);
         _testOutputHelper.WriteLine(result);
         Console.WriteLine(result);
         Assert.False(string.IsNullOrEmpty(result));
+    }
+
+    [Fact]
+    public void TestAST()
+    {
+        string input = "import module1; module test { x = 10; }";
+        FlowDriver driver = new FlowDriver(input);
+
+        var listener = driver.WalkTree();
+        _testOutputHelper.WriteLine(listener.AST.ToString());
     }
 }
