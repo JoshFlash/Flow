@@ -42,11 +42,6 @@ namespace Flow
             var variableDeclarationNode = new VariableDeclarationNode("variable_declaration", children, context);
             nodeStack.Peek().Children.Add(variableDeclarationNode);
             nodeStack.Push(variableDeclarationNode);
-
-            // Add VariableValueNode as child of VariableDeclarationNode
-            var variableValueNode = new VariableValueNode("variable_value", new List<ASTNode>(), context.variable_value());
-            variableDeclarationNode.Children.Add(variableValueNode);
-            nodeStack.Push(variableValueNode);
         }
 
         public override void ExitVariable_declaration([NotNull] FlowParser.Variable_declarationContext context)
@@ -95,9 +90,9 @@ namespace Flow
         
         public override void EnterStatement_block(FlowParser.Statement_blockContext context)
         {
-            var blockStatementNode = new BlockStatementNode(context.GetText(), new List<ASTNode>(), context);
+            var blockStatementNode = new BlockStatementNode("block_statement", new List<ASTNode>(), context);
             nodeStack.Peek().Children.Add(blockStatementNode);
-            nodeStack.Push(blockStatementNode);;
+            nodeStack.Push(blockStatementNode);
         }
 
         public override void ExitStatement_block(FlowParser.Statement_blockContext context)
@@ -133,7 +128,7 @@ namespace Flow
         public override void ExitFunction_declaration(FlowParser.Function_declarationContext context)
         {
             var functionDeclarationNode = nodeStack.Pop() as FunctionDeclarationNode;
-            // Do something with the functionDeclarationNode
+            nodeStack.Peek().Children.Add(functionDeclarationNode);
         }
         
         public override void VisitErrorNode(IErrorNode node)
