@@ -12,28 +12,6 @@ namespace Flow
 
         private Stack<ASTNode> nodeStack = new Stack<ASTNode>();
 
-        private ASTNode CreateNodeFromContext(ParserRuleContext context)
-        {
-            switch (context)
-            {
-                case FlowParser.Logical_orContext logicalOrContext:
-                    return new LogicalOrNode("logical_and", new List<ASTNode>(), logicalOrContext);
-                case FlowParser.Logical_andContext logicalAndContext:
-                    return new LogicalAndNode("logical_and", new List<ASTNode>(), logicalAndContext);
-                case FlowParser.EqualityContext equalityContext:
-                    return new EqualityNode("equality", new List<ASTNode>(), equalityContext);
-                case FlowParser.RelationalContext relationalContext:
-                    return new RelationalNode("relational", new List<ASTNode>(), relationalContext);
-                case FlowParser.AdditiveContext additiveContext:
-                    return new AdditiveNode("additive", new List<ASTNode>(), additiveContext);
-                case FlowParser.MultiplicativeContext multiplicativeContext:
-                    return new MultiplicativeNode("multiplicative", new List<ASTNode>(), multiplicativeContext);
-                default:
-                    return new ExpressionNode("expression", new List<ASTNode>(),
-                        context as FlowParser.ExpressionContext);
-            }
-        }
-
         public override void VisitErrorNode(IErrorNode node)
         {
             Console.Error.WriteLine("Error: " + node.GetText());
@@ -58,7 +36,6 @@ namespace Flow
             nodeStack.Peek().Children.Add(expressionNode);
             nodeStack.Push(expressionNode);
         }
-
 
         public override void ExitExpression(FlowParser.ExpressionContext context)
         {
@@ -171,6 +148,19 @@ namespace Flow
         }
 
         public override void ExitStatement_block(FlowParser.Statement_blockContext context)
+        {
+            nodeStack.Pop();
+        }
+        
+        public override void EnterFunction_call_statement([NotNull] FlowParser.Function_call_statementContext context)
+        {
+            var children = new List<ASTNode>();
+            var functionCallStatementNode = new FunctionCallStatementNode("function_call_statement", children, context);
+            nodeStack.Peek().Children.Add(functionCallStatementNode);
+            nodeStack.Push(functionCallStatementNode);
+        }
+
+        public override void ExitFunction_call_statement([NotNull] FlowParser.Function_call_statementContext context)
         {
             nodeStack.Pop();
         }
@@ -294,7 +284,31 @@ namespace Flow
         {
             nodeStack.Pop();
         }
+        
+        public override void EnterAssignment_statement(FlowParser.Assignment_statementContext context)
+        {
+            var assignmentStatementNode = new AssignmentStatementNode("assignment_statement", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(assignmentStatementNode);
+            nodeStack.Push(assignmentStatementNode);
+        }
 
+        public override void ExitAssignment_statement(FlowParser.Assignment_statementContext context)
+        {
+            nodeStack.Pop();
+        }
+        
+        public override void EnterReturn_statement([NotNull] FlowParser.Return_statementContext context)
+        {
+            var children = new List<ASTNode>();
+            var returnStatementNode = new ReturnStatementNode("return_statement", children, context);
+            nodeStack.Peek().Children.Add(returnStatementNode);
+            nodeStack.Push(returnStatementNode);
+        }
+
+        public override void ExitReturn_statement([NotNull] FlowParser.Return_statementContext context)
+        {
+            nodeStack.Pop();
+        }
 
         public override void EnterLogical_or(FlowParser.Logical_orContext context)
         {
