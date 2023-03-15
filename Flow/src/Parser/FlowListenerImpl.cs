@@ -11,6 +11,17 @@ namespace Flow
         
         private Stack<ASTNode> nodeStack = new Stack<ASTNode>();
         
+        public override void VisitErrorNode(IErrorNode node)
+        {
+            Console.Error.WriteLine("Error: " + node.GetText());
+        }
+
+        public override void VisitTerminal([NotNull] ITerminalNode node)
+        {
+            Console.WriteLine($"Terminal node: {node.Symbol.Type} = {node.Symbol.Text}");
+            base.VisitTerminal(node);
+        }
+
         public override void EnterProgram([NotNull] FlowParser.ProgramContext context)
         {
             var children = new List<ASTNode>();
@@ -22,7 +33,7 @@ namespace Flow
         {
             nodeStack.Pop();
         }
-        
+
         public override void EnterModule_declaration([NotNull] FlowParser.Module_declarationContext context)
         {
             var children = new List<ASTNode>();
@@ -115,31 +126,71 @@ namespace Flow
         
         public override void EnterFunction_declaration(FlowParser.Function_declarationContext context)
         {
-            var parameterListContext = context.parameter_list();
-            var parameterListNode = new ParameterListNode("parameter_list", new List<ASTNode>(), parameterListContext);
+            var identifierNode = new IdentifierNode("identifier", new List<ASTNode>(), context.identifier());
+            var parameterListNode = new ParameterListNode("parameter_list", new List<ASTNode>(), context.parameter_list());
+            var returnTypeNode = context.type() != null
+                ? new TypeNode("type", new List<ASTNode>(), context.type())
+                : null;
+            var blockStatementNode = new BlockStatementNode("block", new List<ASTNode>(), context.statement_block());
 
-            var bodyContext = context.statement_block();
-            var bodyNode = new BlockStatementNode("block_statement", new List<ASTNode>(), bodyContext);
-
-            var functionDeclarationNode = new FunctionDeclarationNode("function_declaration", new List<ASTNode> { parameterListNode, bodyNode }, context);
+            var children = new List<ASTNode> { identifierNode, parameterListNode, returnTypeNode, blockStatementNode };
+            var functionDeclarationNode = new FunctionDeclarationNode("function_declaration", children, context);
+            nodeStack.Peek().Children.Add(functionDeclarationNode);
             nodeStack.Push(functionDeclarationNode);
         }
 
         public override void ExitFunction_declaration(FlowParser.Function_declarationContext context)
         {
-            var functionDeclarationNode = nodeStack.Pop() as FunctionDeclarationNode;
-            nodeStack.Peek().Children.Add(functionDeclarationNode);
+            nodeStack.Pop();
+        }
+
+        public override void EnterParameter_list(FlowParser.Parameter_listContext context)
+        {
+            var parameterListNode = nodeStack.Peek().FindDescendantOfType<ParameterListNode>();
+            if (parameterListNode == null)
+            {
+                throw new InvalidOperationException("Parameter list not found in the function declaration");
+            }
+
+            foreach (var parameterContext in context.parameter())
+            {
+                var parameterNode = new ParameterNode("parameter", new List<ASTNode>(), parameterContext);
+                parameterListNode.Children.Add(parameterNode);
+                nodeStack.Push(parameterNode);
+            }
+        }
+
+        public override void ExitParameter_list(FlowParser.Parameter_listContext context)
+        {
+            foreach (var _ in context.parameter())
+            {
+                nodeStack.Pop();
+            }
+        }
+
+        public override void EnterParameter(FlowParser.ParameterContext context)
+        {
+            var parameterNode = new ParameterNode("parameter", new List<ASTNode>(), context);
+            var identifierNode = new IdentifierNode("identifier", new List<ASTNode>(), context.identifier());
+            var typeNode = new TypeNode("type", new List<ASTNode>(), context.type());
+    
+            parameterNode.Children.Add(identifierNode);
+            parameterNode.Children.Add(typeNode);
+
+            // Add the created ParameterNode to the Parameters list of the ParameterListNode
+            var parameterListNode = nodeStack.Peek().FindDescendantOfType<ParameterListNode>();
+            if (parameterListNode == null)
+            {
+                throw new InvalidOperationException("ParameterListNode not found in the node stack");
+            }
+            parameterListNode.Parameters.Add(parameterNode);
         }
         
-        public override void VisitErrorNode(IErrorNode node)
+        public override void ExitParameter(FlowParser.ParameterContext context)
         {
-            Console.Error.WriteLine("Error: " + node.GetText());
+            // No action required for now
+            base.ExitParameter(context);
         }
         
-        public override void VisitTerminal([NotNull] ITerminalNode node)
-        {
-            Console.WriteLine($"Terminal node: {node.Symbol.Type} = {node.Symbol.Text}");
-            base.VisitTerminal(node);
-        }
     }
 }

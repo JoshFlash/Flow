@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Antlr4.Runtime;
 using static FlowParser;
 
 namespace Flow
@@ -111,44 +112,86 @@ namespace Flow
             : base(type, children, context)
         {
             Parameters = new List<ParameterNode>();
-            foreach (var parameter in context.parameter())
-            {
-                Parameters.Add(new ParameterNode("parameter", null, parameter));
-            }
         }
 
         public override void Accept(IFlowListener listener)
         {
             var context = Context as Parameter_listContext;
             listener.EnterParameter_list(context);
-            foreach (ASTNode child in Children)
+
+            // Here, we add the code to create ParameterNode instances.
+            // The EnterParameter method should create the ParameterNode and add it to the Parameters list.
+            foreach (var parameterContext in context.parameter())
             {
-                child.Accept(listener);
+                listener.EnterParameter(parameterContext);
             }
 
+            // After all parameters are processed, call the ExitParameter_list method.
             listener.ExitParameter_list(context);
         }
     }
 
+
     public class ParameterNode : ASTNode
     {
-        public ParameterNode(string text, List<ASTNode> children, ParameterContext context)
-            : base(text, children, context)
+        public ParameterNode(string name, List<ASTNode> children, ParserRuleContext context)
+            : base(name, children, context)
         {
         }
 
         public override void Accept(IFlowListener listener)
         {
-            var context = Context as ParameterContext;
-            listener.EnterParameter(context);
-            foreach (ASTNode child in Children)
+            listener.EnterParameter((ParameterContext) Context);
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
-
-            listener.ExitParameter(context);
+            listener.ExitParameter((ParameterContext) Context);
         }
     }
+
+    public class IdentifierNode : ASTNode
+    {
+        public string Identifier { get; set; }
+
+        public IdentifierNode(string name, List<ASTNode> children, FlowParser.IdentifierContext context)
+            : base(name, children, context)
+        {
+            Identifier = context.GetText();
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            listener.EnterIdentifier((IdentifierContext) Context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitIdentifier((IdentifierContext) Context);
+        }
+    }
+
+    public class TypeNode : ASTNode
+    {
+        public string TypeName { get; set; }
+
+        public TypeNode(string name, List<ASTNode> children, FlowParser.TypeContext context)
+            : base(name, children, context)
+        {
+            TypeName = context.GetText();
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            listener.EnterType((TypeContext) Context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitType((TypeContext) Context);
+        }
+    }
+
     
     public class UnaryOperationNode : ASTNode
     {
@@ -157,7 +200,7 @@ namespace Flow
 
         public override void Accept(IFlowListener listener)
         {
-            var context = Context as FlowParser.Unary_operationContext;
+            var context = Context as Unary_operationContext;
             listener.EnterUnary_operation(context);
             foreach (ASTNode child in Children)
             {
@@ -211,16 +254,16 @@ namespace Flow
         public BlockStatementNode Body { get; set; }
 
         public FunctionDeclarationNode(string text, List<ASTNode> children, Function_declarationContext context)
-            : base(text, children, context)
+            : base(text, children ?? new List<ASTNode>(), context)
         {
             Name = context.identifier().GetText();
-            Parameters = new ParameterListNode("parameter_list", null, context.parameter_list());
+            // Parameters = new ParameterListNode("parameter_list", null, context.parameter_list());
             Body = new BlockStatementNode("block", null, context.statement_block());
         }
 
         public override void Accept(IFlowListener listener)
         {
-            var context = Context as FlowParser.Function_declarationContext;
+            var context = Context as Function_declarationContext;
             listener.EnterFunction_declaration(context);
             foreach (ASTNode child in Children)
             {

@@ -53,7 +53,8 @@ statement: variable_declaration
          | for_statement
          | return_statement
          | function_call_statement
-         | statement_block;
+         | statement_block
+         | function_declaration;
 
 variable_declaration: 'var' identifier ':' type '=' variable_value ';';
 

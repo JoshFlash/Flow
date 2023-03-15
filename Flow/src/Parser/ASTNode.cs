@@ -30,6 +30,8 @@ namespace Flow
 
             for (int i = 0; i < Children.Count - 1; i++)
             {
+                if (Children[i] is null) continue;
+                
                 Children[i].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", false);
             }
 
@@ -37,6 +39,25 @@ namespace Flow
             {
                 Children[Children.Count - 1].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", true);
             }
+        }
+        
+        public T FindDescendantOfType<T>() where T : ASTNode
+        {
+            foreach (var child in Children)
+            {
+                if (child is T descendant)
+                {
+                    return descendant;
+                }
+
+                var result = child.FindDescendantOfType<T>();
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return default(T);
         }
 
         public abstract void Accept(IFlowListener listener);
