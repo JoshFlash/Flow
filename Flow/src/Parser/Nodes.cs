@@ -7,6 +7,7 @@ namespace Flow
     public class ExpressionNode : ASTNode
     {
         public ExpressionContext ExpressionContext { get; set; }
+        public bool IsEmpty { get; set; } = false;
 
         public ExpressionNode(string text, List<ASTNode> children, ExpressionContext context)
             : base(text, children, context)
@@ -16,6 +17,8 @@ namespace Flow
 
         public override void Accept(IFlowListener listener)
         {
+            if (IsEmpty) return;
+
             var context = Context as ExpressionContext;
             listener.EnterExpression(context);
 
@@ -47,7 +50,6 @@ namespace Flow
 
             listener.ExitExpression(context);
         }
-
     }
 
     public class ProgramNode : ASTNode
@@ -89,7 +91,7 @@ namespace Flow
             listener.ExitModule_declaration(context);
         }
     }
-    
+
     public class ConstantDeclarationNode : ASTNode
     {
         public string Name { get; set; }
@@ -112,6 +114,7 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitConstant_declaration(context);
         }
     }
@@ -216,12 +219,13 @@ namespace Flow
 
         public override void Accept(IFlowListener listener)
         {
-            listener.EnterParameter((ParameterContext) Context);
+            listener.EnterParameter((ParameterContext)Context);
             foreach (var child in Children)
             {
                 child.Accept(listener);
             }
-            listener.ExitParameter((ParameterContext) Context);
+
+            listener.ExitParameter((ParameterContext)Context);
         }
     }
 
@@ -237,12 +241,13 @@ namespace Flow
 
         public override void Accept(IFlowListener listener)
         {
-            listener.EnterIdentifier((IdentifierContext) Context);
+            listener.EnterIdentifier((IdentifierContext)Context);
             foreach (var child in Children)
             {
                 child.Accept(listener);
             }
-            listener.ExitIdentifier((IdentifierContext) Context);
+
+            listener.ExitIdentifier((IdentifierContext)Context);
         }
     }
 
@@ -258,20 +263,23 @@ namespace Flow
 
         public override void Accept(IFlowListener listener)
         {
-            listener.EnterType((TypeContext) Context);
+            listener.EnterType((TypeContext)Context);
             foreach (var child in Children)
             {
                 child.Accept(listener);
             }
-            listener.ExitType((TypeContext) Context);
+
+            listener.ExitType((TypeContext)Context);
         }
     }
 
-    
+
     public class UnaryOperationNode : ASTNode
     {
         public UnaryOperationNode(string text, List<ASTNode> children, Unary_operationContext context)
-            : base(text, children, context) { }
+            : base(text, children, context)
+        {
+        }
 
         public override void Accept(IFlowListener listener)
         {
@@ -281,6 +289,7 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitUnary_operation(context);
         }
     }
@@ -288,7 +297,9 @@ namespace Flow
     public class FunctionCallExpressionNode : ASTNode
     {
         public FunctionCallExpressionNode(string text, List<ASTNode> children, Function_call_expressionContext context)
-            : base(text, children, context) { }
+            : base(text, children, context)
+        {
+        }
 
         public override void Accept(IFlowListener listener)
         {
@@ -298,10 +309,11 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitFunction_call_expression(context);
         }
     }
-    
+
     public class BlockStatementNode : ASTNode
     {
         public BlockStatementNode(string text, List<ASTNode> children, Statement_blockContext context)
@@ -321,7 +333,7 @@ namespace Flow
             listener.ExitStatement_block(context);
         }
     }
-    
+
     public class FunctionDeclarationNode : ASTNode
     {
         public string Name { get; set; }
@@ -342,6 +354,7 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitFunction_declaration(context);
         }
     }
@@ -358,7 +371,9 @@ namespace Flow
         {
             Identifier = new IdentifierNode("identifier", null, context.identifier());
             RangeClause = new RangeClauseNode("range_clause", null, context.range_clause());
-            Condition = context.expression() != null ? new ExpressionNode("expression", null, context.expression()) : null;
+            Condition = context.expression() != null
+                ? new ExpressionNode("expression", null, context.expression())
+                : null;
             Body = new BlockStatementNode("block", null, context.statement_block());
         }
 
@@ -370,10 +385,11 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitFor_statement(context);
         }
     }
-    
+
     public class IfStatementNode : ASTNode
     {
         public ExpressionNode Condition { get; set; }
@@ -398,10 +414,11 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitIf_statement(context);
         }
     }
-    
+
     public class WhileStatementNode : ASTNode
     {
         public ExpressionNode Condition { get; set; }
@@ -422,10 +439,128 @@ namespace Flow
             {
                 child.Accept(listener);
             }
+
             listener.ExitWhile_statement(context);
         }
     }
 
+    public class LogicalOrNode : ASTNode
+    {
+        public LogicalOrNode(string type, List<ASTNode> children, Logical_orContext context)
+            : base(type, children, context)
+        {
+        }
 
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Logical_orContext;
+            listener.EnterLogical_or(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
 
+            listener.ExitLogical_or(context);
+        }
+    }
+
+    public class LogicalAndNode : ASTNode
+    {
+        public LogicalAndNode(string type, List<ASTNode> children, Logical_andContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Logical_andContext;
+            listener.EnterLogical_and(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitLogical_and(context);
+        }
+    }
+
+    public class EqualityNode : ASTNode
+    {
+        public EqualityNode(string type, List<ASTNode> children, EqualityContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as EqualityContext;
+            listener.EnterEquality(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitEquality(context);
+        }
+    }
+
+    public class RelationalNode : ASTNode
+    {
+        public RelationalNode(string type, List<ASTNode> children, RelationalContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as RelationalContext;
+            listener.EnterRelational(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitRelational(context);
+        }
+    }
+
+    public class AdditiveNode : ASTNode
+    {
+        public AdditiveNode(string type, List<ASTNode> children, AdditiveContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as AdditiveContext;
+            listener.EnterAdditive(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitAdditive(context);
+        }
+    }
+
+    public class MultiplicativeNode : ASTNode
+    {
+        public MultiplicativeNode(string type, List<ASTNode> children, MultiplicativeContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as MultiplicativeContext;
+            listener.EnterMultiplicative(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitMultiplicative(context);
+        }
+    }
 }

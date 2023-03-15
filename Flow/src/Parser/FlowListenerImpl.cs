@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 
@@ -8,9 +9,31 @@ namespace Flow
     public class FlowListener : FlowBaseListener
     {
         public ASTNode AST { get; private set; }
-        
+
         private Stack<ASTNode> nodeStack = new Stack<ASTNode>();
-        
+
+        private ASTNode CreateNodeFromContext(ParserRuleContext context)
+        {
+            switch (context)
+            {
+                case FlowParser.Logical_orContext logicalOrContext:
+                    return new LogicalOrNode("logical_and", new List<ASTNode>(), logicalOrContext);
+                case FlowParser.Logical_andContext logicalAndContext:
+                    return new LogicalAndNode("logical_and", new List<ASTNode>(), logicalAndContext);
+                case FlowParser.EqualityContext equalityContext:
+                    return new EqualityNode("equality", new List<ASTNode>(), equalityContext);
+                case FlowParser.RelationalContext relationalContext:
+                    return new RelationalNode("relational", new List<ASTNode>(), relationalContext);
+                case FlowParser.AdditiveContext additiveContext:
+                    return new AdditiveNode("additive", new List<ASTNode>(), additiveContext);
+                case FlowParser.MultiplicativeContext multiplicativeContext:
+                    return new MultiplicativeNode("multiplicative", new List<ASTNode>(), multiplicativeContext);
+                default:
+                    return new ExpressionNode("expression", new List<ASTNode>(),
+                        context as FlowParser.ExpressionContext);
+            }
+        }
+
         public override void VisitErrorNode(IErrorNode node)
         {
             Console.Error.WriteLine("Error: " + node.GetText());
@@ -21,18 +44,34 @@ namespace Flow
             Console.WriteLine($"Terminal node: {node.Symbol.Type} = {node.Symbol.Text}");
             base.VisitTerminal(node);
         }
-        
+
         public override void EnterExpression(FlowParser.ExpressionContext context)
         {
             var expressionNode = new ExpressionNode("expression", new List<ASTNode>(), context);
+
+            // Check if the expression node is empty
+            if (context.children.Count == 1 && context.children[0] is FlowParser.Expression_valueContext)
+            {
+                expressionNode.IsEmpty = true;
+            }
+
             nodeStack.Peek().Children.Add(expressionNode);
             nodeStack.Push(expressionNode);
         }
 
+
         public override void ExitExpression(FlowParser.ExpressionContext context)
         {
-            nodeStack.Pop();
+            var expressionNode = nodeStack.Pop() as ExpressionNode;
+
+            if (expressionNode?.IsEmpty ?? false)
+            {
+                // Remove the empty expression node from the tree
+                var parentNode = nodeStack.Peek();
+                parentNode.Children.Remove(expressionNode);
+            }
         }
+
 
         public override void EnterProgram([NotNull] FlowParser.ProgramContext context)
         {
@@ -58,10 +97,11 @@ namespace Flow
         {
             nodeStack.Pop();
         }
-        
+
         public override void EnterConstant_declaration(FlowParser.Constant_declarationContext context)
         {
-            var constantDeclarationNode = new ConstantDeclarationNode("constant_declaration", new List<ASTNode>(), context);
+            var constantDeclarationNode =
+                new ConstantDeclarationNode("constant_declaration", new List<ASTNode>(), context);
             nodeStack.Peek().Children.Add(constantDeclarationNode);
             nodeStack.Push(constantDeclarationNode);
         }
@@ -122,7 +162,7 @@ namespace Flow
         {
             nodeStack.Pop();
         }
-        
+
         public override void EnterStatement_block(FlowParser.Statement_blockContext context)
         {
             var blockStatementNode = new BlockStatementNode("block_statement", new List<ASTNode>(), context);
@@ -138,7 +178,8 @@ namespace Flow
         public override void EnterFunction_call_expression([NotNull] FlowParser.Function_call_expressionContext context)
         {
             var children = new List<ASTNode>();
-            var functionCallExpressionNode = new FunctionCallExpressionNode("function_call_expression", children, context);
+            var functionCallExpressionNode =
+                new FunctionCallExpressionNode("function_call_expression", children, context);
             nodeStack.Peek().Children.Add(functionCallExpressionNode);
             nodeStack.Push(functionCallExpressionNode);
         }
@@ -147,11 +188,12 @@ namespace Flow
         {
             nodeStack.Pop();
         }
-        
+
         public override void EnterFunction_declaration(FlowParser.Function_declarationContext context)
         {
             var identifierNode = new IdentifierNode("identifier", new List<ASTNode>(), context.identifier());
-            var parameterListNode = new ParameterListNode("parameter_list", new List<ASTNode>(), context.parameter_list());
+            var parameterListNode =
+                new ParameterListNode("parameter_list", new List<ASTNode>(), context.parameter_list());
             var returnTypeNode = context.type() != null
                 ? new TypeNode("type", new List<ASTNode>(), context.type())
                 : null;
@@ -197,7 +239,7 @@ namespace Flow
             var parameterNode = new ParameterNode("parameter", new List<ASTNode>(), context);
             var identifierNode = new IdentifierNode("identifier", new List<ASTNode>(), context.identifier());
             var typeNode = new TypeNode("type", new List<ASTNode>(), context.type());
-    
+
             parameterNode.Children.Add(identifierNode);
             parameterNode.Children.Add(typeNode);
 
@@ -207,15 +249,16 @@ namespace Flow
             {
                 throw new InvalidOperationException("ParameterListNode not found in the node stack");
             }
+
             parameterListNode.Parameters.Add(parameterNode);
         }
-        
+
         public override void ExitParameter(FlowParser.ParameterContext context)
         {
             // No action required for now
             base.ExitParameter(context);
         }
-        
+
         public override void EnterFor_statement(FlowParser.For_statementContext context)
         {
             var forStatementNode = new ForStatementNode("for_statement", new List<ASTNode>(), context);
@@ -227,7 +270,7 @@ namespace Flow
         {
             nodeStack.Pop();
         }
-        
+
         public override void EnterIf_statement(FlowParser.If_statementContext context)
         {
             var ifStatementNode = new IfStatementNode("if_statement", new List<ASTNode>(), context);
@@ -239,7 +282,7 @@ namespace Flow
         {
             nodeStack.Pop();
         }
-        
+
         public override void EnterWhile_statement(FlowParser.While_statementContext context)
         {
             var whileStatementNode = new WhileStatementNode("while_statement", new List<ASTNode>(), context);
@@ -252,5 +295,115 @@ namespace Flow
             nodeStack.Pop();
         }
 
+
+        public override void EnterLogical_or(FlowParser.Logical_orContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                var logicalOrNode = new LogicalOrNode("logical_or", new List<ASTNode>(), context);
+                nodeStack.Peek().Children.Add(logicalOrNode);
+                nodeStack.Push(logicalOrNode);
+            }
+        }
+
+        public override void ExitLogical_or(FlowParser.Logical_orContext context)
+        {
+            // Only pop the node stack if the logical_or node was actually added
+            if (context.ChildCount != 1)
+            {
+                nodeStack.Pop();
+            }
+        }
+
+        public override void EnterLogical_and(FlowParser.Logical_andContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                var logicalOrNode = new LogicalAndNode("logical_or", new List<ASTNode>(), context);
+                nodeStack.Peek().Children.Add(logicalOrNode);
+                nodeStack.Push(logicalOrNode);
+            }
+        }
+
+        public override void ExitLogical_and(FlowParser.Logical_andContext context)
+        {
+            // Only pop the node stack if the logical_or node was actually added
+            if (context.ChildCount > 1)
+            {
+                nodeStack.Pop();
+            }
+        }
+
+        public override void EnterEquality(FlowParser.EqualityContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                var equalityNode = new EqualityNode("equality", new List<ASTNode>(), context);
+                nodeStack.Peek().Children.Add(equalityNode);
+                nodeStack.Push(equalityNode);
+            }
+        }
+
+        public override void ExitEquality(FlowParser.EqualityContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                nodeStack.Pop();
+            }
+        }
+
+        public override void EnterRelational(FlowParser.RelationalContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                var relationalNode = new RelationalNode("relational", new List<ASTNode>(), context);
+                nodeStack.Peek().Children.Add(relationalNode);
+                nodeStack.Push(relationalNode);
+            }
+        }
+
+        public override void ExitRelational(FlowParser.RelationalContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                nodeStack.Pop();
+            }
+        }
+
+        public override void EnterAdditive(FlowParser.AdditiveContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                var additiveNode = new AdditiveNode("additive", new List<ASTNode>(), context);
+                nodeStack.Peek().Children.Add(additiveNode);
+                nodeStack.Push(additiveNode);
+            }
+        }
+
+        public override void ExitAdditive(FlowParser.AdditiveContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                nodeStack.Pop();
+            }
+        }
+
+        public override void EnterMultiplicative(FlowParser.MultiplicativeContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                var multiplicativeNode = new MultiplicativeNode("multiplicative", new List<ASTNode>(), context);
+                nodeStack.Peek().Children.Add(multiplicativeNode);
+                nodeStack.Push(multiplicativeNode);
+            }
+        }
+
+        public override void ExitMultiplicative(FlowParser.MultiplicativeContext context)
+        {
+            if (context.ChildCount > 1)
+            {
+                nodeStack.Pop();
+            }
+        }
     }
 }

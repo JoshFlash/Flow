@@ -47,7 +47,7 @@ namespace Flow
                 Children[i].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", false, postScript);
             }
 
-            if (Children.Count > 0)
+            if (Children.Count > 0 && Children[Children.Count - 1] != null)
             {
                 Children[Children.Count - 1].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", true, postScript);
             }
