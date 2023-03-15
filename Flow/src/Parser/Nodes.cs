@@ -4,6 +4,52 @@ using static FlowParser;
 
 namespace Flow
 {
+    public class ExpressionNode : ASTNode
+    {
+        public ExpressionContext ExpressionContext { get; set; }
+
+        public ExpressionNode(string text, List<ASTNode> children, ExpressionContext context)
+            : base(text, children, context)
+        {
+            ExpressionContext = context;
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as ExpressionContext;
+            listener.EnterExpression(context);
+
+            // Recursively visit all children
+            foreach (var child in ExpressionContext.children)
+            {
+                if (child is ParserRuleContext parserRuleContext)
+                {
+                    ASTNode childNode = null;
+
+                    // TODO
+                    // Check the type of parserRuleContext and create the corresponding ASTNode
+                    if (parserRuleContext is Logical_orContext logicalOrContext)
+                    {
+                        // childNode = new LogicalOrNode("logical_or", new List<ASTNode>(), logicalOrContext);
+                    }
+                    else if (parserRuleContext is Logical_andContext logicalAndContext)
+                    {
+                        // childNode = new LogicalAndNode("logical_and", new List<ASTNode>(), logicalAndContext);
+                    }
+                    // Add more cases for other types of contexts, e.g., EqualityNode, RelationalNode, etc.
+
+                    if (childNode != null)
+                    {
+                        childNode.Accept(listener);
+                    }
+                }
+            }
+
+            listener.ExitExpression(context);
+        }
+
+    }
+
     public class ProgramNode : ASTNode
     {
         public ProgramNode(string text, List<ASTNode> children, ProgramContext context)
@@ -154,7 +200,7 @@ namespace Flow
     {
         public string Identifier { get; set; }
 
-        public IdentifierNode(string name, List<ASTNode> children, FlowParser.IdentifierContext context)
+        public IdentifierNode(string name, List<ASTNode> children, IdentifierContext context)
             : base(name, children, context)
         {
             Identifier = context.GetText();
@@ -175,7 +221,7 @@ namespace Flow
     {
         public string TypeName { get; set; }
 
-        public TypeNode(string name, List<ASTNode> children, FlowParser.TypeContext context)
+        public TypeNode(string name, List<ASTNode> children, TypeContext context)
             : base(name, children, context)
         {
             TypeName = context.GetText();
@@ -195,7 +241,7 @@ namespace Flow
     
     public class UnaryOperationNode : ASTNode
     {
-        public UnaryOperationNode(string text, List<ASTNode> children, FlowParser.Unary_operationContext context)
+        public UnaryOperationNode(string text, List<ASTNode> children, Unary_operationContext context)
             : base(text, children, context) { }
 
         public override void Accept(IFlowListener listener)
@@ -212,7 +258,7 @@ namespace Flow
 
     public class FunctionCallExpressionNode : ASTNode
     {
-        public FunctionCallExpressionNode(string text, List<ASTNode> children, FlowParser.Function_call_expressionContext context)
+        public FunctionCallExpressionNode(string text, List<ASTNode> children, Function_call_expressionContext context)
             : base(text, children, context) { }
 
         public override void Accept(IFlowListener listener)
@@ -250,14 +296,12 @@ namespace Flow
     public class FunctionDeclarationNode : ASTNode
     {
         public string Name { get; set; }
-        public ParameterListNode Parameters { get; set; }
         public BlockStatementNode Body { get; set; }
 
         public FunctionDeclarationNode(string text, List<ASTNode> children, Function_declarationContext context)
             : base(text, children ?? new List<ASTNode>(), context)
         {
             Name = context.identifier().GetText();
-            // Parameters = new ParameterListNode("parameter_list", null, context.parameter_list());
             Body = new BlockStatementNode("block", null, context.statement_block());
         }
 
@@ -272,6 +316,87 @@ namespace Flow
             listener.ExitFunction_declaration(context);
         }
     }
+
+    public class ForStatementNode : ASTNode
+    {
+        public IdentifierNode Identifier { get; set; }
+        public RangeClauseNode RangeClause { get; set; }
+        public ExpressionNode Condition { get; set; }
+        public BlockStatementNode Body { get; set; }
+
+        public ForStatementNode(string text, List<ASTNode> children, For_statementContext context)
+            : base(text, children, context)
+        {
+            Identifier = new IdentifierNode("identifier", null, context.identifier());
+            RangeClause = new RangeClauseNode("range_clause", null, context.range_clause());
+            Condition = context.expression() != null ? new ExpressionNode("expression", null, context.expression()) : null;
+            Body = new BlockStatementNode("block", null, context.statement_block());
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as For_statementContext;
+            listener.EnterFor_statement(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitFor_statement(context);
+        }
+    }
+    
+    public class IfStatementNode : ASTNode
+    {
+        public ExpressionNode Condition { get; set; }
+        public BlockStatementNode TrueBlock { get; set; }
+        public BlockStatementNode FalseBlock { get; set; }
+
+        public IfStatementNode(string text, List<ASTNode> children, If_statementContext context)
+            : base(text, children, context)
+        {
+            Condition = new ExpressionNode("expression", null, context.expression());
+            TrueBlock = new BlockStatementNode("block", null, context.statement_block(0));
+            FalseBlock = context.statement_block().Length > 1
+                ? new BlockStatementNode("block", null, context.statement_block(1))
+                : null;
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as If_statementContext;
+            listener.EnterIf_statement(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitIf_statement(context);
+        }
+    }
+    
+    public class WhileStatementNode : ASTNode
+    {
+        public ExpressionNode Condition { get; set; }
+        public BlockStatementNode Body { get; set; }
+
+        public WhileStatementNode(string text, List<ASTNode> children, While_statementContext context)
+            : base(text, children, context)
+        {
+            Condition = new ExpressionNode("expression", null, context.expression());
+            Body = new BlockStatementNode("block", null, context.statement_block());
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as While_statementContext;
+            listener.EnterWhile_statement(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitWhile_statement(context);
+        }
+    }
+
 
 
 }

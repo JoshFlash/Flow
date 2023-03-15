@@ -21,6 +21,18 @@ namespace Flow
             Console.WriteLine($"Terminal node: {node.Symbol.Type} = {node.Symbol.Text}");
             base.VisitTerminal(node);
         }
+        
+        public override void EnterExpression(FlowParser.ExpressionContext context)
+        {
+            var expressionNode = new ExpressionNode("expression", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(expressionNode);
+            nodeStack.Push(expressionNode);
+        }
+
+        public override void ExitExpression(FlowParser.ExpressionContext context)
+        {
+            nodeStack.Pop();
+        }
 
         public override void EnterProgram([NotNull] FlowParser.ProgramContext context)
         {
@@ -192,5 +204,41 @@ namespace Flow
             base.ExitParameter(context);
         }
         
+        public override void EnterFor_statement(FlowParser.For_statementContext context)
+        {
+            var forStatementNode = new ForStatementNode("for_statement", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(forStatementNode);
+            nodeStack.Push(forStatementNode);
+        }
+
+        public override void ExitFor_statement(FlowParser.For_statementContext context)
+        {
+            nodeStack.Pop();
+        }
+        
+        public override void EnterIf_statement(FlowParser.If_statementContext context)
+        {
+            var ifStatementNode = new IfStatementNode("if_statement", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(ifStatementNode);
+            nodeStack.Push(ifStatementNode);
+        }
+
+        public override void ExitIf_statement(FlowParser.If_statementContext context)
+        {
+            nodeStack.Pop();
+        }
+        
+        public override void EnterWhile_statement(FlowParser.While_statementContext context)
+        {
+            var whileStatementNode = new WhileStatementNode("while_statement", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(whileStatementNode);
+            nodeStack.Push(whileStatementNode);
+        }
+
+        public override void ExitWhile_statement(FlowParser.While_statementContext context)
+        {
+            nodeStack.Pop();
+        }
+
     }
 }
