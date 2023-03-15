@@ -23,33 +23,6 @@ namespace Flow
             base.VisitTerminal(node);
         }
 
-        public override void EnterExpression(FlowParser.ExpressionContext context)
-        {
-            var expressionNode = new ExpressionNode("expression", new List<ASTNode>(), context);
-
-            // Check if the expression node is empty
-            if (context.children.Count == 1 && context.children[0] is FlowParser.Expression_valueContext)
-            {
-                expressionNode.IsEmpty = true;
-            }
-
-            nodeStack.Peek().Children.Add(expressionNode);
-            nodeStack.Push(expressionNode);
-        }
-
-        public override void ExitExpression(FlowParser.ExpressionContext context)
-        {
-            var expressionNode = nodeStack.Pop() as ExpressionNode;
-
-            if (expressionNode?.IsEmpty ?? false)
-            {
-                // Remove the empty expression node from the tree
-                var parentNode = nodeStack.Peek();
-                parentNode.Children.Remove(expressionNode);
-            }
-        }
-
-
         public override void EnterProgram([NotNull] FlowParser.ProgramContext context)
         {
             var children = new List<ASTNode>();
@@ -167,7 +140,7 @@ namespace Flow
 
         public override void EnterFunction_call_expression([NotNull] FlowParser.Function_call_expressionContext context)
         {
-            var children = new List<ASTNode>();
+            var children = new List<ExpressionNode>();
             var functionCallExpressionNode =
                 new FunctionCallExpressionNode("function_call_expression", children, context);
             nodeStack.Peek().Children.Add(functionCallExpressionNode);
@@ -314,7 +287,7 @@ namespace Flow
         {
             if (context.ChildCount > 1)
             {
-                var logicalOrNode = new LogicalOrNode("logical_or", new List<ASTNode>(), context);
+                var logicalOrNode = new LogicalOrNode("logical_or", new List<ExpressionNode>(), context);
                 nodeStack.Peek().Children.Add(logicalOrNode);
                 nodeStack.Push(logicalOrNode);
             }
@@ -333,7 +306,7 @@ namespace Flow
         {
             if (context.ChildCount > 1)
             {
-                var logicalOrNode = new LogicalAndNode("logical_or", new List<ASTNode>(), context);
+                var logicalOrNode = new LogicalAndNode("logical_or", new List<ExpressionNode>(), context);
                 nodeStack.Peek().Children.Add(logicalOrNode);
                 nodeStack.Push(logicalOrNode);
             }
@@ -352,7 +325,7 @@ namespace Flow
         {
             if (context.ChildCount > 1)
             {
-                var equalityNode = new EqualityNode("equality", new List<ASTNode>(), context);
+                var equalityNode = new EqualityNode("equality", new List<ExpressionNode>(), context);
                 nodeStack.Peek().Children.Add(equalityNode);
                 nodeStack.Push(equalityNode);
             }
@@ -370,7 +343,7 @@ namespace Flow
         {
             if (context.ChildCount > 1)
             {
-                var relationalNode = new RelationalNode("relational", new List<ASTNode>(), context);
+                var relationalNode = new RelationalNode("relational", new List<ExpressionNode>(), context);
                 nodeStack.Peek().Children.Add(relationalNode);
                 nodeStack.Push(relationalNode);
             }
@@ -388,7 +361,7 @@ namespace Flow
         {
             if (context.ChildCount > 1)
             {
-                var additiveNode = new AdditiveNode("additive", new List<ASTNode>(), context);
+                var additiveNode = new AdditiveNode("additive", new List<ExpressionNode>(), context);
                 nodeStack.Peek().Children.Add(additiveNode);
                 nodeStack.Push(additiveNode);
             }
@@ -406,7 +379,7 @@ namespace Flow
         {
             if (context.ChildCount > 1)
             {
-                var multiplicativeNode = new MultiplicativeNode("multiplicative", new List<ASTNode>(), context);
+                var multiplicativeNode = new MultiplicativeNode("multiplicative", new List<ExpressionNode>(), context);
                 nodeStack.Peek().Children.Add(multiplicativeNode);
                 nodeStack.Push(multiplicativeNode);
             }

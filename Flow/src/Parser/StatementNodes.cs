@@ -33,7 +33,7 @@ namespace Flow
         }
     }
     
-    public class ConstantDeclarationNode : ASTNode
+    public class ConstantDeclarationNode : StatementNode
     {
         public string Name { get; set; }
         public TypeNode Type { get; set; }
@@ -60,7 +60,7 @@ namespace Flow
         }
     }
 
-    public class VariableDeclarationNode : ASTNode
+    public class VariableDeclarationNode : StatementNode
     {
         public string Name { get; set; }
 
@@ -96,7 +96,7 @@ namespace Flow
             Identifier = new IdentifierNode("identifier", null, context.identifier());
             RangeClause = new RangeClauseNode("range_clause", null, context.range_clause());
             Condition = context.expression() != null
-                ? new ExpressionNode("expression", null, context.expression())
+                ? ExpressionNode.CreateExpressionNodeFromContext(context.expression())
                 : null;
             Body = new BlockStatementNode("block", null, context.statement_block());
         }
@@ -123,7 +123,7 @@ namespace Flow
         public IfStatementNode(string text, List<ASTNode> children, If_statementContext context)
             : base(text, children, context)
         {
-            Condition = new ExpressionNode("expression", null, context.expression());
+            Condition = ExpressionNode.CreateExpressionNodeFromContext(context.expression());
             TrueBlock = new BlockStatementNode("block", null, context.statement_block(0));
             FalseBlock = context.statement_block().Length > 1
                 ? new BlockStatementNode("block", null, context.statement_block(1))
@@ -151,7 +151,7 @@ namespace Flow
         public WhileStatementNode(string text, List<ASTNode> children, While_statementContext context)
             : base(text, children, context)
         {
-            Condition = new ExpressionNode("expression", null, context.expression());
+            Condition = ExpressionNode.CreateExpressionNodeFromContext(context.expression());
             Body = new BlockStatementNode("block", null, context.statement_block());
         }
 
@@ -215,14 +215,9 @@ namespace Flow
     
     public class AssignmentStatementNode : StatementNode
     {
-        public ExpressionNode Lhs { get; set; }
-        public ExpressionNode Rhs { get; set; }
-
         public AssignmentStatementNode(string text, List<ASTNode> children, Assignment_statementContext context)
             : base(text, children, context)
         {
-            Lhs = new ExpressionNode("lhs_expression", null, context.expression(0));
-            Rhs = new ExpressionNode("rhs_expression", null, context.expression(1));
         }
 
         public override void Accept(IFlowListener listener)

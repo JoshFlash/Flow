@@ -241,6 +241,36 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement_block([NotNull] FlowParser.Statement_blockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.function_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunction_declaration([NotNull] FlowParser.Function_declarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.function_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunction_declaration([NotNull] FlowParser.Function_declarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.parameter_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameter_list([NotNull] FlowParser.Parameter_listContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.parameter_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameter_list([NotNull] FlowParser.Parameter_listContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameter([NotNull] FlowParser.ParameterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameter([NotNull] FlowParser.ParameterContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.unary_operation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -330,36 +360,6 @@ public interface IFlowListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpression_value([NotNull] FlowParser.Expression_valueContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.function_declaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFunction_declaration([NotNull] FlowParser.Function_declarationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.function_declaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFunction_declaration([NotNull] FlowParser.Function_declarationContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.parameter_list"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterParameter_list([NotNull] FlowParser.Parameter_listContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.parameter_list"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitParameter_list([NotNull] FlowParser.Parameter_listContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.parameter"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterParameter([NotNull] FlowParser.ParameterContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.parameter"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitParameter([NotNull] FlowParser.ParameterContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.function_call_expression"/>.
 	/// </summary>

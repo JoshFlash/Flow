@@ -1,0 +1,241 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Antlr4.Runtime;
+using static FlowParser;
+
+namespace Flow
+{
+    public abstract class ExpressionNode : ASTNode
+    {
+        public new List<ExpressionNode> Children;
+        
+        public ExpressionNode(string text, List<ExpressionNode> children, ParserRuleContext context)
+            : base(text, new List<ASTNode>(), context)
+        {
+            Children = children;
+        }
+
+        public static ExpressionNode CreateExpressionNodeFromContext(ExpressionContext context)
+        {
+            return CreateLogicalOrNodeFromContext(context.logical_or());
+        }
+
+        private static ExpressionNode CreateLogicalOrNodeFromContext(Logical_orContext context)
+        {
+            var children = context.logical_and()
+                .Select(CreateLogicalAndNodeFromContext).ToList();
+            return new LogicalOrNode("logical_or", children, context);
+        }
+
+        private static ExpressionNode CreateLogicalAndNodeFromContext(Logical_andContext context)
+        {
+            var children = context.equality()
+                .Select(CreateEqualityNodeFromContext).ToList();
+            return new LogicalAndNode("logical_and", children, context);
+        }
+
+        private static ExpressionNode CreateEqualityNodeFromContext(EqualityContext context)
+        {
+            var children = context.relational()
+                .Select(CreateRelationalNodeFromContext).ToList();
+            return new EqualityNode("equality", children, context);
+        }
+
+        private static ExpressionNode CreateRelationalNodeFromContext(RelationalContext context)
+        {
+            var children = context.additive()
+                .Select(CreateAdditiveNodeFromContext).ToList();
+            return new RelationalNode("relational", children, context);
+        }
+
+        private static ExpressionNode CreateAdditiveNodeFromContext(AdditiveContext context)
+        {
+            var children = context.multiplicative()
+                .Select(CreateMultiplicativeNodeFromContext).ToList();
+            return new AdditiveNode("additive", children, context);
+        }
+
+        private static ExpressionNode CreateMultiplicativeNodeFromContext(MultiplicativeContext context)
+        {
+            var children = context.expression_value()
+                .Select(CreateExpressionValueNodeFromContext).ToList();
+            return new MultiplicativeNode("multiplicative", children, context);
+        }
+
+        private static ExpressionNode CreateExpressionValueNodeFromContext(Expression_valueContext context)
+        {
+            if (context.literal() != null)
+            {
+                // Instantiate and return LiteralNode
+            }
+            else if (context.identifier() != null)
+            {
+                // Instantiate and return IdentifierNode
+            }
+            else if (context.unary_operation() != null)
+            {
+                // Instantiate and return UnaryOperationNode
+            }
+            else if (context.function_call_expression() != null)
+            {
+                var children = new List<ExpressionNode>();
+                return new FunctionCallExpressionNode(
+                    "function_call_expression", 
+                    children,
+                    context.function_call_expression()
+                );
+            }
+            else if (context.expression() != null)
+            {
+                return CreateExpressionNodeFromContext(context.expression());
+            }
+            else
+            {
+                throw new InvalidOperationException("Unexpected expression value context");
+            }
+
+            return default;
+        }
+    }
+
+    public class FunctionCallExpressionNode : ExpressionNode
+    {
+        public FunctionCallExpressionNode(string text, List<ExpressionNode> children, Function_call_expressionContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Function_call_expressionContext;
+            listener.EnterFunction_call_expression(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitFunction_call_expression(context);
+        }
+    }
+
+    public class LogicalOrNode : ExpressionNode
+    {
+        public LogicalOrNode(string type, List<ExpressionNode> children, Logical_orContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Logical_orContext;
+            listener.EnterLogical_or(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitLogical_or(context);
+        }
+    }
+
+    public class LogicalAndNode : ExpressionNode
+    {
+        public LogicalAndNode(string type, List<ExpressionNode> children, Logical_andContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Logical_andContext;
+            listener.EnterLogical_and(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitLogical_and(context);
+        }
+    }
+
+    public class EqualityNode : ExpressionNode
+    {
+        public EqualityNode(string type, List<ExpressionNode> children, EqualityContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as EqualityContext;
+            listener.EnterEquality(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitEquality(context);
+        }
+    }
+
+    public class RelationalNode : ExpressionNode
+    {
+        public RelationalNode(string type, List<ExpressionNode> children, RelationalContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as RelationalContext;
+            listener.EnterRelational(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitRelational(context);
+        }
+    }
+
+    public class AdditiveNode : ExpressionNode
+    {
+        public AdditiveNode(string type, List<ExpressionNode> children, AdditiveContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as AdditiveContext;
+            listener.EnterAdditive(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitAdditive(context);
+        }
+    }
+
+    public class MultiplicativeNode : ExpressionNode
+    {
+        public MultiplicativeNode(string type, List<ExpressionNode> children, MultiplicativeContext context)
+            : base(type, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as MultiplicativeContext;
+            listener.EnterMultiplicative(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitMultiplicative(context);
+        }
+    }
+}

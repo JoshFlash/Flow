@@ -4,7 +4,7 @@ using static FlowParser;
 
 namespace Flow
 {
-    public class ExpressionNode : ASTNode
+    /*public class ExpressionNode : ASTNode
     {
         public ExpressionContext ExpressionContext { get; set; }
         public bool IsEmpty { get; set; } = false;
@@ -50,7 +50,7 @@ namespace Flow
 
             listener.ExitExpression(context);
         }
-    }
+    }*/
 
     public class ProgramNode : ASTNode
     {
@@ -243,144 +243,5 @@ namespace Flow
             listener.ExitUnary_operation(context);
         }
     }
-
-    public class FunctionCallExpressionNode : ASTNode
-    {
-        public FunctionCallExpressionNode(string text, List<ASTNode> children, Function_call_expressionContext context)
-            : base(text, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as Function_call_expressionContext;
-            listener.EnterFunction_call_expression(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitFunction_call_expression(context);
-        }
-    }
-
-    public class LogicalOrNode : ASTNode
-    {
-        public LogicalOrNode(string type, List<ASTNode> children, Logical_orContext context)
-            : base(type, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as Logical_orContext;
-            listener.EnterLogical_or(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitLogical_or(context);
-        }
-    }
-
-    public class LogicalAndNode : ASTNode
-    {
-        public LogicalAndNode(string type, List<ASTNode> children, Logical_andContext context)
-            : base(type, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as Logical_andContext;
-            listener.EnterLogical_and(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitLogical_and(context);
-        }
-    }
-
-    public class EqualityNode : ASTNode
-    {
-        public EqualityNode(string type, List<ASTNode> children, EqualityContext context)
-            : base(type, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as EqualityContext;
-            listener.EnterEquality(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitEquality(context);
-        }
-    }
-
-    public class RelationalNode : ASTNode
-    {
-        public RelationalNode(string type, List<ASTNode> children, RelationalContext context)
-            : base(type, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as RelationalContext;
-            listener.EnterRelational(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitRelational(context);
-        }
-    }
-
-    public class AdditiveNode : ASTNode
-    {
-        public AdditiveNode(string type, List<ASTNode> children, AdditiveContext context)
-            : base(type, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as AdditiveContext;
-            listener.EnterAdditive(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitAdditive(context);
-        }
-    }
-
-    public class MultiplicativeNode : ASTNode
-    {
-        public MultiplicativeNode(string type, List<ASTNode> children, MultiplicativeContext context)
-            : base(type, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as MultiplicativeContext;
-            listener.EnterMultiplicative(context);
-            foreach (ASTNode child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitMultiplicative(context);
-        }
-    }
+    
 }
