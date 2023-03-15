@@ -24,22 +24,35 @@ namespace Flow
             return sb.ToString();
         }
         
-        private void ToStringHelper(StringBuilder sb, string prefix, bool isTail)
+        private void ToStringHelper(StringBuilder sb, string prefix, bool isTail, string ps = "")
         {
-            sb.AppendLine($"{prefix}{(isTail ? "└── " : "├── ")}{Text}");
+            string displayText = Text + ps;
+
+            var postScript = "";
+            if (this is ConstantDeclarationNode constNode)
+            {
+                postScript = $" ({constNode.Name})";
+            }
+            else if (this is VariableDeclarationNode varNode)
+            {
+                postScript = $" ({varNode.Name})";
+            }
+
+            sb.AppendLine($"{prefix}{(isTail ? "└── " : "├── ")}{displayText}");
 
             for (int i = 0; i < Children.Count - 1; i++)
             {
                 if (Children[i] is null) continue;
-                
-                Children[i].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", false);
+
+                Children[i].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", false, postScript);
             }
 
             if (Children.Count > 0)
             {
-                Children[Children.Count - 1].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", true);
+                Children[Children.Count - 1].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", true, postScript);
             }
         }
+
         
         public T FindDescendantOfType<T>() where T : ASTNode
         {

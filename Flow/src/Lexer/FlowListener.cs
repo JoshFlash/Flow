@@ -71,6 +71,16 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariable_declaration([NotNull] FlowParser.Variable_declarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.constant_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConstant_declaration([NotNull] FlowParser.Constant_declarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.constant_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConstant_declaration([NotNull] FlowParser.Constant_declarationContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.variable_value"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

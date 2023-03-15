@@ -45,7 +45,8 @@ program: 'import' identifier ';' module_declaration statement* '}' EOF;
 
 module_declaration: ('module' identifier)?;
 
-statement: variable_declaration
+statement: constant_declaration
+         | variable_declaration
          | assignment_statement
          | print_statement
          | if_statement
@@ -57,6 +58,7 @@ statement: variable_declaration
          | function_declaration;
 
 variable_declaration: 'var' identifier ':' type '=' variable_value ';';
+constant_declaration: 'const' identifier ':' type '=' variable_value ';';
 
 variable_value: expression
               | 'array' '[' type ']' '(' expression ')'

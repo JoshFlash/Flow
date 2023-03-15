@@ -89,12 +89,41 @@ namespace Flow
             listener.ExitModule_declaration(context);
         }
     }
+    
+    public class ConstantDeclarationNode : ASTNode
+    {
+        public string Name { get; set; }
+        public TypeNode Type { get; set; }
+        public VariableValueNode Value { get; set; }
+
+        public ConstantDeclarationNode(string text, List<ASTNode> children, Constant_declarationContext context)
+            : base(text, children, context)
+        {
+            Name = context.identifier().GetText();
+            Type = new TypeNode("type", new List<ASTNode>(), context.type());
+            Value = new VariableValueNode("value", new List<ASTNode>(), context.variable_value());
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Constant_declarationContext;
+            listener.EnterConstant_declaration(context);
+            foreach (ASTNode child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitConstant_declaration(context);
+        }
+    }
 
     public class VariableDeclarationNode : ASTNode
     {
+        public string Name { get; set; }
+
         public VariableDeclarationNode(string text, List<ASTNode> children, Variable_declarationContext context)
             : base(text, children, context)
         {
+            Name = context.identifier().GetText();
         }
 
         public override void Accept(IFlowListener listener)

@@ -59,6 +59,18 @@ namespace Flow
             nodeStack.Pop();
         }
         
+        public override void EnterConstant_declaration(FlowParser.Constant_declarationContext context)
+        {
+            var constantDeclarationNode = new ConstantDeclarationNode("constant_declaration", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(constantDeclarationNode);
+            nodeStack.Push(constantDeclarationNode);
+        }
+
+        public override void ExitConstant_declaration(FlowParser.Constant_declarationContext context)
+        {
+            nodeStack.Pop();
+        }
+
         public override void EnterVariable_declaration([NotNull] FlowParser.Variable_declarationContext context)
         {
             var children = new List<ASTNode>();

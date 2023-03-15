@@ -84,6 +84,18 @@ public partial class FlowBaseListener : IFlowListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariable_declaration([NotNull] FlowParser.Variable_declarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.constant_declaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterConstant_declaration([NotNull] FlowParser.Constant_declarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.constant_declaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitConstant_declaration([NotNull] FlowParser.Constant_declarationContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.variable_value"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
