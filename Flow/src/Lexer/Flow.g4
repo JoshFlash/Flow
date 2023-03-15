@@ -82,9 +82,11 @@ if_statement: 'if' expression statement_block ( 'else' statement_block )?;
 
 while_statement: 'while' expression statement_block;
 
-for_statement: 'for' identifier 'in' range_clause statement_block;
+for_statement: 'for' identifier 'in' range_clause ('where' expression)? statement_block;
 
-range_clause: expression '->' expression;
+range_clause: expression ARROW expression;
+
+for_expression: 'for' identifier 'in' range_clause ('where' expression)?;
 
 return_statement: 'return' expression? ';';
 

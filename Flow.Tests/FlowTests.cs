@@ -18,10 +18,11 @@ public class FlowTests
     {
         string input = "var x: int = 5;";
         FlowDriver driver = new FlowDriver(input);
+        
         var tree = driver.ParseVariableDecl();
         string result = tree.ToStringTree(driver.Parser);
         _testOutputHelper.WriteLine(result);
-        Console.WriteLine(result);
+        
         Assert.False(string.IsNullOrEmpty(result));
     }
 

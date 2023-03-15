@@ -216,6 +216,18 @@ public partial class FlowBaseListener : IFlowListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRange_clause([NotNull] FlowParser.Range_clauseContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.for_expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFor_expression([NotNull] FlowParser.For_expressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.for_expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFor_expression([NotNull] FlowParser.For_expressionContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.return_statement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -181,6 +181,16 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitRange_clause([NotNull] FlowParser.Range_clauseContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.for_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFor_expression([NotNull] FlowParser.For_expressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.for_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFor_expression([NotNull] FlowParser.For_expressionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.return_statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
