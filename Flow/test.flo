@@ -48,4 +48,8 @@ module Program {
   if testNineteen is testTwenty {
     Print("how??!");
   }
+  
+  let GenericAdd<T>(T a, T b) : T = {
+    a + b
+  }
 #
