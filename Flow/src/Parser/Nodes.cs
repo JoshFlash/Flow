@@ -84,53 +84,6 @@ namespace Flow
         }
     }
 
-    public class ParameterListNode : ASTNode
-    {
-        public List<ParameterNode> Parameters { get; set; }
-
-        public ParameterListNode(string type, List<ASTNode> children, Parameter_listContext context)
-            : base(type, children, context)
-        {
-            Parameters = new List<ParameterNode>();
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as Parameter_listContext;
-            listener.EnterParameter_list(context);
-
-            // Here, we add the code to create ParameterNode instances.
-            // The EnterParameter method should create the ParameterNode and add it to the Parameters list.
-            foreach (var parameterContext in context.parameter())
-            {
-                listener.EnterParameter(parameterContext);
-            }
-
-            // After all parameters are processed, call the ExitParameter_list method.
-            listener.ExitParameter_list(context);
-        }
-    }
-
-
-    public class ParameterNode : ASTNode
-    {
-        public ParameterNode(string name, List<ASTNode> children, ParserRuleContext context)
-            : base(name, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            listener.EnterParameter((ParameterContext)Context);
-            foreach (var child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitParameter((ParameterContext)Context);
-        }
-    }
-
     public class TypeNode : ASTNode
     {
         public string TypeName { get; set; }
@@ -150,6 +103,47 @@ namespace Flow
             }
 
             listener.ExitType((TypeContext)Context);
+        }
+    }
+    
+    public class ParameterListNode : ASTNode
+    {
+        public ParameterListNode(string text, List<ASTNode> children, ParserRuleContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Parameter_listContext;
+            listener.EnterParameter_list(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitParameter_list(context);
+        }
+    }
+
+    public class ParameterNode : ASTNode
+    {
+
+        public ParameterNode(string text, List<ASTNode> children, ParameterContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as ParameterContext;
+            listener.EnterParameter(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitParameter(context);
         }
     }
 

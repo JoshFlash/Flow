@@ -24,19 +24,30 @@ namespace Flow
             return sb.ToString();
         }
         
-        private void ToStringHelper(StringBuilder sb, string prefix, bool isTail, string ps = "")
+        private void ToStringHelper(StringBuilder sb, string prefix, bool isTail)
         {
-            string displayText = Text + ps;
-
             var postScript = "";
-            if (this is ConstantDeclarationNode constNode)
+            var litContext = Context?.GetRuleContext<FlowParser.LiteralContext>(0);
+            var expContext = Context?.GetRuleContext<FlowParser.ExpressionContext>(0);
+            var stContext = Context?.GetRuleContext<FlowParser.StatementContext>(0);
+
+            if (!(this is ProgramNode || this is BlockStatementNode))
             {
-                postScript = $" ({constNode.Name})";
+                if (litContext != null)
+                {
+                    postScript = $" ({litContext.GetText()})";
+                }
+                else if (expContext != null)
+                {
+                    postScript = $" ({expContext.GetText()})";
+                }
+                else if (stContext != null)
+                {
+                    postScript = $" ({stContext.GetText()})";
+                }
             }
-            else if (this is VariableDeclarationNode varNode)
-            {
-                postScript = $" ({varNode.Name})";
-            }
+
+            string displayText = Text + postScript;
 
             sb.AppendLine($"{prefix}{(isTail ? "└── " : "├── ")}{displayText}");
 
@@ -44,33 +55,13 @@ namespace Flow
             {
                 if (Children[i] is null) continue;
 
-                Children[i].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", false, postScript);
+                Children[i].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", false);
             }
 
             if (Children.Count > 0 && Children[Children.Count - 1] != null)
             {
-                Children[Children.Count - 1].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", true, postScript);
+                Children[Children.Count - 1].ToStringHelper(sb, $"{prefix}{(isTail ? "    " : "│   ")}", true);
             }
-        }
-
-        
-        public T FindDescendantOfType<T>() where T : ASTNode
-        {
-            foreach (var child in Children)
-            {
-                if (child is T descendant)
-                {
-                    return descendant;
-                }
-
-                var result = child.FindDescendantOfType<T>();
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-
-            return default(T);
         }
 
         public abstract void Accept(IFlowListener listener);

@@ -168,59 +168,40 @@ namespace Flow
             nodeStack.Peek().Children.Add(functionDeclarationNode);
             nodeStack.Push(functionDeclarationNode);
         }
-
-        public override void ExitFunction_declaration(Function_declarationContext context)
-        {
-            nodeStack.Pop();
-        }
-
+        
         public override void EnterParameter_list(Parameter_listContext context)
         {
-            var parameterListNode = nodeStack.Peek().FindDescendantOfType<ParameterListNode>();
-            if (parameterListNode == null)
-            {
-                throw new InvalidOperationException("Parameter list not found in the function declaration");
-            }
-
-            foreach (var parameterContext in context.parameter())
-            {
-                var parameterNode = new ParameterNode("parameter", new List<ASTNode>(), parameterContext);
-                parameterListNode.Children.Add(parameterNode);
-                nodeStack.Push(parameterNode);
-            }
+            var children = new List<ASTNode>();
+            var parameterListNode = new ParameterListNode("parameter_list", children, context);
+            nodeStack.Peek().Children.Add(parameterListNode);
+            nodeStack.Push(parameterListNode);
         }
 
         public override void ExitParameter_list(Parameter_listContext context)
         {
-            foreach (var _ in context.parameter())
-            {
-                nodeStack.Pop();
-            }
+            nodeStack.Pop();
         }
 
         public override void EnterParameter(ParameterContext context)
         {
-            var parameterNode = new ParameterNode("parameter", new List<ASTNode>(), context);
-            var identifierNode = new IdentifierNode("identifier", new List<ExpressionNode>(), context.identifier());
             var typeNode = new TypeNode("type", new List<ASTNode>(), context.type());
-
-            parameterNode.Children.Add(identifierNode);
-            parameterNode.Children.Add(typeNode);
-
-            // Add the created ParameterNode to the Parameters list of the ParameterListNode
-            var parameterListNode = nodeStack.Peek().FindDescendantOfType<ParameterListNode>();
-            if (parameterListNode == null)
-            {
-                throw new InvalidOperationException("ParameterListNode not found in the node stack");
-            }
-
-            parameterListNode.Parameters.Add(parameterNode);
+            var identifierNode = new IdentifierNode("identifier", new List<ExpressionNode>(), context.identifier());
+    
+            var children = new List<ASTNode> { typeNode, identifierNode };
+            var parameterNode = new ParameterNode("parameter", children, context);
+    
+            nodeStack.Peek().Children.Add(parameterNode);
+            nodeStack.Push(parameterNode);
         }
 
         public override void ExitParameter(ParameterContext context)
         {
-            // No action required for now
-            base.ExitParameter(context);
+            nodeStack.Pop();
+        }
+        
+        public override void ExitFunction_declaration(Function_declarationContext context)
+        {
+            nodeStack.Pop();
         }
 
         public override void EnterFor_statement(For_statementContext context)

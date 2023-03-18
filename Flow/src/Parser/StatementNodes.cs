@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using static FlowParser;
 
 namespace Flow
 {
     public abstract class StatementNode : ASTNode
     {
+        public string Name { get; set; }
+        
         public StatementNode(string name, List<ASTNode> children, ParserRuleContext context)
             : base(name, children, context)
         {
@@ -35,7 +36,6 @@ namespace Flow
     
     public class ConstantDeclarationNode : StatementNode
     {
-        public string Name { get; set; }
         public TypeNode Type { get; set; }
         public VariableValueNode Value { get; set; }
 
@@ -62,8 +62,6 @@ namespace Flow
 
     public class VariableDeclarationNode : StatementNode
     {
-        public string Name { get; set; }
-
         public VariableDeclarationNode(string text, List<ASTNode> children, Variable_declarationContext context)
             : base(text, children, context)
         {
@@ -168,11 +166,12 @@ namespace Flow
         }
     }
     
-    public class FunctionCallStatementNode : ASTNode
+    public class FunctionCallStatementNode : StatementNode
     {
         public FunctionCallStatementNode(string text, List<ASTNode> children, Function_call_statementContext context)
             : base(text, children, context)
         {
+            Name = context.identifier().GetText();
         }
 
         public override void Accept(IFlowListener listener)
@@ -190,7 +189,6 @@ namespace Flow
     
     public class FunctionDeclarationNode : StatementNode
     {
-        public string Name { get; set; }
         public BlockStatementNode Body { get; set; }
 
         public FunctionDeclarationNode(string text, List<ASTNode> children, Function_declarationContext context)
@@ -233,7 +231,7 @@ namespace Flow
         }
     }
     
-    public class ReturnStatementNode : ASTNode
+    public class ReturnStatementNode : StatementNode
     {
         public ReturnStatementNode(string text, List<ASTNode> children, Return_statementContext context)
             : base(text, children, context)

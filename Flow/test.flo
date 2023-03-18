@@ -20,6 +20,14 @@ module Program {
     for i in 2 -> n where primes[i] {
       Print(i.string);
     }
+    
+    TestFunction("Hello", 42, true);
+  }
+  
+  let TestFunction(str: string, num: int, flag: bool) = {
+    Print("String: " + str);
+    Print("Number: " + num.string);
+    Print("Flag: " + flag.string);
   }
 }
 
