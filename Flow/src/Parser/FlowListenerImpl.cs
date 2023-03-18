@@ -410,5 +410,17 @@ namespace Flow
         {
             nodeStack.Pop();
         }
+        
+        public override void EnterPrint_statement(Print_statementContext context)
+        {
+            var printStatementNode = new PrintStatementNode("print_statement", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(printStatementNode);
+            nodeStack.Push(printStatementNode);
+        }
+
+        public override void ExitPrint_statement(Print_statementContext context)
+        {
+            nodeStack.Pop();
+        }
     }
 }

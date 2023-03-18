@@ -251,4 +251,23 @@ namespace Flow
         }
     }
     
+    public class PrintStatementNode : StatementNode
+    {
+        public PrintStatementNode(string text, List<ASTNode> children, Print_statementContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Print_statementContext;
+            listener.EnterPrint_statement(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitPrint_statement(context);
+        }
+    }
+    
 }
