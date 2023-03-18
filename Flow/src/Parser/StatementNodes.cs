@@ -24,7 +24,7 @@ namespace Flow
         {
             var context = Context as Statement_blockContext;
             listener.EnterStatement_block(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -51,7 +51,7 @@ namespace Flow
         {
             var context = Context as Constant_declarationContext;
             listener.EnterConstant_declaration(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -74,7 +74,7 @@ namespace Flow
         {
             var context = Context as Variable_declarationContext;
             listener.EnterVariable_declaration(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -105,7 +105,7 @@ namespace Flow
         {
             var context = Context as For_statementContext;
             listener.EnterFor_statement(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -134,7 +134,7 @@ namespace Flow
         {
             var context = Context as If_statementContext;
             listener.EnterIf_statement(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -159,7 +159,7 @@ namespace Flow
         {
             var context = Context as While_statementContext;
             listener.EnterWhile_statement(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -179,7 +179,7 @@ namespace Flow
         {
             var context = Context as Function_call_statementContext;
             listener.EnterFunction_call_statement(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -204,7 +204,7 @@ namespace Flow
         {
             var context = Context as Function_declarationContext;
             listener.EnterFunction_declaration(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -224,7 +224,7 @@ namespace Flow
         {
             var context = Context as Assignment_statementContext;
             listener.EnterAssignment_statement(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -244,7 +244,7 @@ namespace Flow
         {
             var context = Context as Return_statementContext;
             listener.EnterReturn_statement(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }

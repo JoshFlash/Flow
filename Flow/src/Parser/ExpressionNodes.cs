@@ -110,7 +110,7 @@ namespace Flow
         {
             var context = Context as Function_call_expressionContext;
             listener.EnterFunction_call_expression(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -130,7 +130,7 @@ namespace Flow
         {
             var context = Context as Logical_orContext;
             listener.EnterLogical_or(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -150,7 +150,7 @@ namespace Flow
         {
             var context = Context as Logical_andContext;
             listener.EnterLogical_and(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -170,7 +170,7 @@ namespace Flow
         {
             var context = Context as EqualityContext;
             listener.EnterEquality(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -190,7 +190,7 @@ namespace Flow
         {
             var context = Context as RelationalContext;
             listener.EnterRelational(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -210,7 +210,7 @@ namespace Flow
         {
             var context = Context as AdditiveContext;
             listener.EnterAdditive(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -230,7 +230,7 @@ namespace Flow
         {
             var context = Context as MultiplicativeContext;
             listener.EnterMultiplicative(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }

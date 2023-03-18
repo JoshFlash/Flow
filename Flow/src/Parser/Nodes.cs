@@ -63,7 +63,7 @@ namespace Flow
         {
             var context = Context as ProgramContext;
             listener.EnterProgram(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -83,7 +83,7 @@ namespace Flow
         {
             var context = Context as Module_declarationContext;
             listener.EnterModule_declaration(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -103,7 +103,7 @@ namespace Flow
         {
             var context = Context as Variable_valueContext;
             listener.EnterVariable_value(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -123,7 +123,7 @@ namespace Flow
         {
             var context = Context as Range_clauseContext;
             listener.EnterRange_clause(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
@@ -235,7 +235,7 @@ namespace Flow
         {
             var context = Context as Unary_operationContext;
             listener.EnterUnary_operation(context);
-            foreach (ASTNode child in Children)
+            foreach (var child in Children)
             {
                 child.Accept(listener);
             }
