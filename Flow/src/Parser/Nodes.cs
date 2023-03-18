@@ -24,6 +24,42 @@ namespace Flow
         }
     }
 
+    public class ImportListNode : ASTNode
+    {
+        public ImportListNode(string text, List<ASTNode> children, ParserRuleContext context) : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Import_listContext;
+            listener.EnterImport_list(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitImport_list(context);
+        }
+    }
+    
+    public class ImportStatementNode : ASTNode
+    {
+        public ImportStatementNode(string text, List<ASTNode> children, ParserRuleContext context) : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Import_listContext;
+            listener.EnterImport_list(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+            listener.ExitImport_list(context);
+        }
+    }
+
     public class ModuleDeclarationNode : ASTNode
     {
         public ModuleDeclarationNode(string text, List<ASTNode> children, Module_declarationContext context)

@@ -41,6 +41,26 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitProgram([NotNull] FlowParser.ProgramContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.import_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterImport_list([NotNull] FlowParser.Import_listContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.import_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitImport_list([NotNull] FlowParser.Import_listContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.import_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterImport_statement([NotNull] FlowParser.Import_statementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.import_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitImport_statement([NotNull] FlowParser.Import_statementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.module_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

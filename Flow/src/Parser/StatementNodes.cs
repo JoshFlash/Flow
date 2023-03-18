@@ -187,15 +187,11 @@ namespace Flow
         }
     }
     
-    public class FunctionDeclarationNode : StatementNode
+    public class FunctionDeclarationNode : ASTNode
     {
-        public BlockStatementNode Body { get; set; }
-
         public FunctionDeclarationNode(string text, List<ASTNode> children, Function_declarationContext context)
             : base(text, children ?? new List<ASTNode>(), context)
         {
-            Name = context.identifier().GetText();
-            Body = new BlockStatementNode("block", null, context.statement_block());
         }
 
         public override void Accept(IFlowListener listener)

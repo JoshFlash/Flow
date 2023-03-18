@@ -41,9 +41,12 @@ COMMENT: '//' ~[\r\n]* -> skip;
 BLOCK_COMMENT: '#' .*? '#' -> skip;
 
 /* Parser Rules */
-program: 'import' identifier ';' module_declaration statement* '}' EOF;
+program: import_list module_declaration statement* '}' EOF;
 
-module_declaration: ('module' identifier)?;
+import_list: import_statement*;
+import_statement: 'import' identifier ';';
+
+module_declaration: ('module' identifier statement '}')?;
 
 statement: constant_declaration
          | variable_declaration
@@ -99,7 +102,7 @@ argument_list: expression (',' expression)*;
 
 statement_block: '{' statement* '}';
 
-function_declaration: 'let' identifier '(' parameter_list? ')' ':' type? '=' statement_block;
+function_declaration: 'let' identifier parameter_list? ':' type? '=' statement_block;
 
 parameter_list: '(' (parameter (',' parameter)*)? ')';
 

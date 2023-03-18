@@ -16,6 +16,19 @@ namespace Flow
             Children = children;
             Context = context;
         }
+
+        public bool HasParent<T>() where T : ParserRuleContext
+        {
+            var parent = Context.Parent;
+            while (parent != null)
+            {
+                if (parent is T) return true;
+
+                parent = parent.Parent;
+            }
+
+            return false;
+        }
         
         public override string ToString()
         {
@@ -30,9 +43,14 @@ namespace Flow
             var litContext = Context?.GetRuleContext<FlowParser.LiteralContext>(0);
             var expContext = Context?.GetRuleContext<FlowParser.ExpressionContext>(0);
             var stContext = Context?.GetRuleContext<FlowParser.StatementContext>(0);
+            var idContext = Context?.GetRuleContext<FlowParser.IdentifierContext>(0);
 
-            bool showContext = litContext != null || expContext != null || stContext != null;
-            showContext &= !(this is ProgramNode || this is BlockStatementNode || this is WhileStatementNode ||  this is ForStatementNode);
+            bool showContext = litContext != null || expContext != null || stContext != null || idContext != null;
+            showContext &= !(this is ProgramNode 
+                             || this is BlockStatementNode 
+                             || this is WhileStatementNode 
+                             || this is ForStatementNode
+                             || this is ModuleDeclarationNode);
             if (Context != null && showContext)
             {
                 postScript = $" ({Context?.GetText()})";

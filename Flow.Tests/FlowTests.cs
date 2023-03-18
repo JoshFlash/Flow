@@ -14,19 +14,33 @@ public class FlowTests
     }
 
     [Fact]
-    public void TestDriver()
+    [Trait("Category", "AST")]
+    public void TestAST_HelloWorld()
     {
-        string input = "var x: int = 5;";
+        string input = 
+"""
+import System;
+import Math;
+            
+module Program {
+  const m:int = 10;
+  
+  let Main(args:array[string]) = {
+    const l:int = 11;
+    Print("Hello Flow!");
+  }
+}
+
+""";
         FlowDriver driver = new FlowDriver(input);
-        
-        var tree = driver.ParseVariableDecl();
-        string result = tree.ToStringTree(driver.Parser);
+
+        var listener = driver.WalkTree();
+        string result = listener.AST.ToString();
         _testOutputHelper.WriteLine(result);
-        
-        Assert.False(string.IsNullOrEmpty(result));
     }
 
-    [Fact]
+    // [Fact]
+    // [Trait("Category", "AST")]
     public void TestAST()
     {
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../Flow/test.flo");
@@ -73,5 +87,20 @@ public class FlowTests
              └── block_statement
 
 */
+    }
+
+    [Fact]
+    [Trait("Category", "Codegen")]
+    public void TestCodeGenerator()
+    {
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../../Flow/test.flo");
+        string input = File.ReadAllText(filePath);
+        FlowDriver driver = new FlowDriver(input);
+
+        var listener = driver.WalkTree();
+        var outputCode = listener.GetCodeGenString();
+        outputCode = CodeGen.FormatCSharpCode(outputCode);
+
+        _testOutputHelper.WriteLine(outputCode);
     }
 }

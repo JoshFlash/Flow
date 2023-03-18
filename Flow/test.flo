@@ -1,6 +1,9 @@
 import System;
+import Math;
 
 module Program {
+  const l:int = 11;
+
   let Main(args:array[string]) = {
     const n:int = 100;
     var primes:array[bool] = array[bool](n + 1);

@@ -48,6 +48,30 @@ public partial class FlowBaseListener : IFlowListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitProgram([NotNull] FlowParser.ProgramContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.import_list"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterImport_list([NotNull] FlowParser.Import_listContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.import_list"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitImport_list([NotNull] FlowParser.Import_listContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.import_statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterImport_statement([NotNull] FlowParser.Import_statementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.import_statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitImport_statement([NotNull] FlowParser.Import_statementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.module_declaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
