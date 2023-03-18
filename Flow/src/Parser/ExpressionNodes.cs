@@ -65,37 +65,45 @@ namespace Flow
 
         private static ExpressionNode CreateExpressionValueNodeFromContext(Expression_valueContext context)
         {
+            var children = new List<ExpressionNode>();
             if (context.literal() != null)
             {
-                // Instantiate and return LiteralNode
+                return new LiteralNode(
+                    "literal", 
+                    children, 
+                    context.literal()
+                );
             }
-            else if (context.identifier() != null)
+            if (context.identifier() != null)
             {
-                // Instantiate and return IdentifierNode
+                return new IdentifierNode(
+                    "identifier", 
+                    children, 
+                    context.identifier()
+                );
             }
-            else if (context.unary_operation() != null)
+            if (context.unary_operation() != null)
             {
-                // Instantiate and return UnaryOperationNode
+                return new UnaryOperationNode(
+                    "unary_operation", 
+                    children, 
+                    context.unary_operation()
+                );
             }
-            else if (context.function_call_expression() != null)
+            if (context.function_call_expression() != null)
             {
-                var children = new List<ExpressionNode>();
                 return new FunctionCallExpressionNode(
                     "function_call_expression", 
                     children,
                     context.function_call_expression()
                 );
             }
-            else if (context.expression() != null)
+            if (context.expression() != null)
             {
                 return CreateExpressionNodeFromContext(context.expression());
             }
-            else
-            {
-                throw new InvalidOperationException("Unexpected expression value context");
-            }
-
-            return default;
+            
+            throw new InvalidOperationException("Unexpected expression value context");
         }
     }
 
@@ -238,4 +246,87 @@ namespace Flow
             listener.ExitMultiplicative(context);
         }
     }
+    
+    public class UnaryOperationNode : ExpressionNode
+    {
+        public UnaryOperationNode(string text, List<ExpressionNode> children, Unary_operationContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Unary_operationContext;
+            listener.EnterUnary_operation(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitUnary_operation(context);
+        }
+    }
+    
+    public class ExpressionValueNode : ExpressionNode
+    {
+        public ExpressionValueNode(string text, List<ExpressionNode> children, Expression_valueContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Expression_valueContext;
+            listener.EnterExpression_value(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitExpression_value(context);
+        }
+    }
+    
+    public class IdentifierNode : ExpressionNode
+    {
+        public string Identifier { get; set; }
+
+        public IdentifierNode(string name, List<ExpressionNode> children, IdentifierContext context)
+            : base(name, children, context)
+        {
+            Identifier = context.GetText();
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            listener.EnterIdentifier((IdentifierContext)Context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitIdentifier((IdentifierContext)Context);
+        }
+    }
+    
+    public class LiteralNode : ExpressionNode
+    {
+        public LiteralNode(string text, List<ExpressionNode> children, LiteralContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as LiteralContext;
+            listener.EnterLiteral(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitLiteral(context);
+        }
+    }
+
 }

@@ -4,54 +4,6 @@ using static FlowParser;
 
 namespace Flow
 {
-    /*public class ExpressionNode : ASTNode
-    {
-        public ExpressionContext ExpressionContext { get; set; }
-        public bool IsEmpty { get; set; } = false;
-
-        public ExpressionNode(string text, List<ASTNode> children, ExpressionContext context)
-            : base(text, children, context)
-        {
-            ExpressionContext = context;
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            if (IsEmpty) return;
-
-            var context = Context as ExpressionContext;
-            listener.EnterExpression(context);
-
-            // Recursively visit all children
-            foreach (var child in ExpressionContext.children)
-            {
-                if (child is ParserRuleContext parserRuleContext)
-                {
-                    ASTNode childNode = null;
-
-                    // TODO
-                    // Check the type of parserRuleContext and create the corresponding ASTNode
-                    if (parserRuleContext is Logical_orContext logicalOrContext)
-                    {
-                        // childNode = new LogicalOrNode("logical_or", new List<ASTNode>(), logicalOrContext);
-                    }
-                    else if (parserRuleContext is Logical_andContext logicalAndContext)
-                    {
-                        // childNode = new LogicalAndNode("logical_and", new List<ASTNode>(), logicalAndContext);
-                    }
-                    // Add more cases for other types of contexts, e.g., EqualityNode, RelationalNode, etc.
-
-                    if (childNode != null)
-                    {
-                        childNode.Accept(listener);
-                    }
-                }
-            }
-
-            listener.ExitExpression(context);
-        }
-    }*/
-
     public class ProgramNode : ASTNode
     {
         public ProgramNode(string text, List<ASTNode> children, ProgramContext context)
@@ -179,28 +131,6 @@ namespace Flow
         }
     }
 
-    public class IdentifierNode : ASTNode
-    {
-        public string Identifier { get; set; }
-
-        public IdentifierNode(string name, List<ASTNode> children, IdentifierContext context)
-            : base(name, children, context)
-        {
-            Identifier = context.GetText();
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            listener.EnterIdentifier((IdentifierContext)Context);
-            foreach (var child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitIdentifier((IdentifierContext)Context);
-        }
-    }
-
     public class TypeNode : ASTNode
     {
         public string TypeName { get; set; }
@@ -223,25 +153,4 @@ namespace Flow
         }
     }
 
-
-    public class UnaryOperationNode : ASTNode
-    {
-        public UnaryOperationNode(string text, List<ASTNode> children, Unary_operationContext context)
-            : base(text, children, context)
-        {
-        }
-
-        public override void Accept(IFlowListener listener)
-        {
-            var context = Context as Unary_operationContext;
-            listener.EnterUnary_operation(context);
-            foreach (var child in Children)
-            {
-                child.Accept(listener);
-            }
-
-            listener.ExitUnary_operation(context);
-        }
-    }
-    
 }
