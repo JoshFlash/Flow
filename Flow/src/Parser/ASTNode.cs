@@ -31,20 +31,11 @@ namespace Flow
             var expContext = Context?.GetRuleContext<FlowParser.ExpressionContext>(0);
             var stContext = Context?.GetRuleContext<FlowParser.StatementContext>(0);
 
-            if (!(this is ProgramNode || this is BlockStatementNode))
+            bool showContext = litContext != null || expContext != null || stContext != null;
+            showContext &= !(this is ProgramNode || this is BlockStatementNode || this is WhileStatementNode ||  this is ForStatementNode);
+            if (Context != null && showContext)
             {
-                if (litContext != null)
-                {
-                    postScript = $" ({litContext.GetText()})";
-                }
-                else if (expContext != null)
-                {
-                    postScript = $" ({expContext.GetText()})";
-                }
-                else if (stContext != null)
-                {
-                    postScript = $" ({stContext.GetText()})";
-                }
+                postScript = $" ({Context?.GetText()})";
             }
 
             string displayText = Text + postScript;
