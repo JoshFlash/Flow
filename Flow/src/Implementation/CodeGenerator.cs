@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Antlr4.Runtime;
@@ -12,6 +13,7 @@ namespace Flow
     
     public static class CodeGen
     {
+        private static Queue<string> queuedExpressions = new Queue<string>();
         public static void GenerateCodeForOpenContext<T>(T context, ASTNode node, StringBuilder sb, TargetBackend codeTargetBackend)
             where T: ParserRuleContext
         {
@@ -95,6 +97,11 @@ namespace Flow
                 
                 case Statement_blockContext statement:
                     sb.AppendLine("{");
+                    if (queuedExpressions.Count > 0)
+                    {
+                        string whereExpression = queuedExpressions.Dequeue();
+                        sb.AppendLine($"if (!({whereExpression})) continue;");
+                    }
                     break;
                 
                 case Function_declarationContext functionDecl:
@@ -102,6 +109,7 @@ namespace Flow
                     sb.AppendLine($"public {typeString} {functionDecl.identifier().GetText()}");
                     if (functionDecl.parameter_list() == null) sb.Append("()");
                     break;
+                
                 case Parameter_listContext parameterList:
                     string parameterText = "";
                     foreach (var paramCtx in parameterList.parameter())
@@ -112,6 +120,18 @@ namespace Flow
                     sb.Append($"({parameterText})");
                     break;
                 
+                case For_statementContext forStatement:
+                    string rangeStart = forStatement.range_clause().expression(0).GetText();
+                    string rangeEnd = forStatement.range_clause().expression(1).GetText();
+                    string loopVariable = forStatement.identifier().GetText();
+
+                    sb.AppendLine($"for (int {loopVariable} = {rangeStart}; {loopVariable} <= {rangeEnd}; {loopVariable}++)");
+                    
+                    if (forStatement.expression() != null)
+                    {
+                        queuedExpressions.Enqueue(forStatement.expression().GetText());
+                    }
+                    break;
             }
         }
 

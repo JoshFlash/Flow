@@ -234,6 +234,24 @@ namespace Flow
             CodeGen.GenerateCodeForClosedContext(context, node, stringBuilder, backend);
         }
 
+        public override void EnterElement_access_expression([NotNull] Element_access_expressionContext context)
+        {
+            var children = new List<ExpressionNode>();
+            var functionCallExpressionNode =
+                new ElementAccessExpressionNode("element_access_expression", children, context);
+            nodeStack.Peek().Children.Add(functionCallExpressionNode);
+            nodeStack.Push(functionCallExpressionNode);
+            
+            CodeGen.GenerateCodeForOpenContext(context, nodeStack.Peek(), stringBuilder, backend);
+        }
+
+        public override void ExitElement_access_expression([NotNull] Element_access_expressionContext context)
+        {
+            var node = nodeStack.Pop();
+            
+            CodeGen.GenerateCodeForClosedContext(context, node, stringBuilder, backend);
+        }
+        
         public override void EnterFunction_declaration(Function_declarationContext context)
         {
             var children = new List<ASTNode>();
@@ -243,7 +261,6 @@ namespace Flow
 
             CodeGen.GenerateCodeForOpenContext(context, nodeStack.Peek(), stringBuilder, backend);
         }
-
         
         public override void ExitFunction_declaration(Function_declarationContext context)
         {

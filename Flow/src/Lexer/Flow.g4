@@ -95,9 +95,7 @@ argument_list: expression (',' expression)*;
 statement_block: '{' statement* '}';
 
 function_declaration: 'let' identifier parameter_list? ':' type? '=' statement_block;
-
 parameter_list: '(' (parameter (',' parameter)*)? ')';
-
 parameter: identifier ':' type;
 
 unary_operation: NOT expression;
@@ -114,9 +112,11 @@ expression_value: literal
     | identifier
     | unary_operation
     | function_call_expression
+    | element_access_expression
     | '(' expression ')';
 
 function_call_expression: identifier '(' argument_list? ')';
+element_access_expression: identifier '[' expression ']';
 
 literal: INTEGER
     | TRUE

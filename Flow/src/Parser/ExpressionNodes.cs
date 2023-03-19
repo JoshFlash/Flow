@@ -98,6 +98,15 @@ namespace Flow
                     context.function_call_expression()
                 );
             }
+
+            if (context.element_access_expression() != null)
+            {
+                return new ElementAccessExpressionNode(
+                    "element_access_expression",
+                    children,
+                    context.element_access_expression()
+                );
+            }
             if (context.expression() != null)
             {
                 return CreateExpressionNodeFromContext(context.expression());
@@ -124,6 +133,26 @@ namespace Flow
             }
 
             listener.ExitFunction_call_expression(context);
+        }
+    }
+
+    public class ElementAccessExpressionNode : ExpressionNode
+    {
+        public ElementAccessExpressionNode(string text, List<ExpressionNode> children, Element_access_expressionContext context)
+            : base(text, children, context)
+        {
+        }
+        
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Element_access_expressionContext;
+            listener.EnterElement_access_expression(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.EnterElement_access_expression(context);
         }
     }
 

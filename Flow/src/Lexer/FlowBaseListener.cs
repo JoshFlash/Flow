@@ -468,6 +468,18 @@ public partial class FlowBaseListener : IFlowListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunction_call_expression([NotNull] FlowParser.Function_call_expressionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.element_access_expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterElement_access_expression([NotNull] FlowParser.Element_access_expressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.element_access_expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitElement_access_expression([NotNull] FlowParser.Element_access_expressionContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

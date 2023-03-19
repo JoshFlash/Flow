@@ -391,6 +391,16 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_call_expression([NotNull] FlowParser.Function_call_expressionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.element_access_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterElement_access_expression([NotNull] FlowParser.Element_access_expressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.element_access_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitElement_access_expression([NotNull] FlowParser.Element_access_expressionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
