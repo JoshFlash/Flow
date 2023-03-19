@@ -40,11 +40,6 @@ namespace Flow
             }
         }
 
-        public static string TestExtensionCtx(this string[] context)
-        {
-            return context[0];
-        }
-
         private static void GenerateCSharpForOpenContext<T>(T context, ASTNode node, StringBuilder sb)
             where T : ParserRuleContext
         {
