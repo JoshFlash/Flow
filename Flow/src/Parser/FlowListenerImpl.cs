@@ -24,13 +24,9 @@ namespace Flow
 
         public override void VisitErrorNode(IErrorNode node)
         {
-            Console.Error.WriteLine("Error: " + node.GetText());
-        }
-
-        public override void VisitTerminal([NotNull] ITerminalNode node)
-        {
-            Console.WriteLine($"Terminal node: {node.Symbol.Type} = {node.Symbol.Text}");
-            base.VisitTerminal(node);
+            int line = node.Symbol.Line;
+            int column = node.Symbol.Column;
+            Console.Error.WriteLine($"Error at line {line}, column {column}: {node.GetText()}");
         }
 
         public override void EnterProgram([NotNull] ProgramContext context)
