@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using Antlr4.Runtime;
 using static FlowParser;
@@ -124,16 +125,151 @@ namespace Flow
                     string rangeStart = forStatement.range_clause().expression(0).GetText();
                     string rangeEnd = forStatement.range_clause().expression(1).GetText();
                     string loopVariable = forStatement.identifier().GetText();
-
-                    sb.AppendLine($"for (int {loopVariable} = {rangeStart}; {loopVariable} <= {rangeEnd}; {loopVariable}++)");
-                    
                     if (forStatement.expression() != null)
                     {
                         queuedExpressions.Enqueue(forStatement.expression().GetText());
                     }
+                    
+                    sb.AppendLine(
+                        $"for (int {loopVariable} = {rangeStart}; {loopVariable} <= {rangeEnd}; {loopVariable}++)");
+                    break;
+
+                case If_statementContext ifStatement:
+                    sb.Append($"if ({BuildCSharpExpression(ifStatement.expression())})");
                     break;
             }
         }
+
+        private static string BuildCSharpExpression(ExpressionContext expressionContext)
+        {
+            var root = expressionContext.logical_or();
+            return BuildCSharpLogicalOr(root);
+
+            string BuildCSharpLogicalOr(Logical_orContext logicalOr)
+            {
+                var logicalAnds = logicalOr.logical_and();
+                var logicalAndStrings = logicalAnds.Select(BuildCSharpLogicalAnd);
+                return string.Join(" || ", logicalAndStrings);
+            }
+
+            string BuildCSharpLogicalAnd(Logical_andContext logicalAnd)
+            {
+                var equalities = logicalAnd.equality();
+                var equalityStrings = equalities.Select(BuildCSharpEquality);
+                return string.Join(" && ", equalityStrings);
+            }
+
+            string BuildCSharpEquality(EqualityContext equality)
+            {
+                var relationals = equality.relational();
+                var relationalStrings = relationals.Select(BuildCSharpRelational);
+
+                List<string> operators = new List<string>();
+                foreach (var eq in equality.EQ()) operators.Add(eq.GetText());
+                foreach (var neq in equality.NEQ()) operators.Add(neq.GetText());
+
+                if (operators.Count + 1 != relationals.Length)
+                {
+                    throw new InvalidOperationException("Mismatch between the number of relationals and operators in the equality context");
+                }
+
+                var zipped = Enumerable.Zip(relationalStrings, operators.Concat(new[] { "" }), (r, op) => $"{r} {op}");
+                return string.Join(" ", zipped).Replace("is","==");
+            }
+
+            string BuildCSharpRelational(RelationalContext relational)
+            {
+                var additives = relational.additive();
+                var additiveStrings = additives.Select(BuildCSharpAdditive);
+
+                List<string> operators = new List<string>();
+                foreach (var lt in relational.LT()) operators.Add(lt.GetText());
+                foreach (var lte in relational.LTE()) operators.Add(lte.GetText());
+                foreach (var gt in relational.GT()) operators.Add(gt.GetText());
+                foreach (var gte in relational.GTE()) operators.Add(gte.GetText());
+
+                if (operators.Count + 1 != additives.Length)
+                {
+                    throw new InvalidOperationException("Mismatch between the number of additives and operators in the relational context");
+                }
+
+                var zipped = Enumerable.Zip(additiveStrings, operators.Concat(new[] { "" }), (a, op) => $"{a} {op}");
+                return string.Join(" ", zipped);
+            }
+            
+            string BuildCSharpAdditive(AdditiveContext additive)
+            {
+                var multiplicatives = additive.multiplicative();
+                var multiplicativeStrings = multiplicatives.Select(BuildCSharpMultiplicative);
+
+                List<string> operators = new List<string>();
+                foreach (var add in additive.ADD()) operators.Add(add.GetText());
+                foreach (var sub in additive.SUB()) operators.Add(sub.GetText());
+
+                if (operators.Count + 1 != multiplicatives.Length)
+                {
+                    throw new InvalidOperationException("Mismatch between the number of multiplicatives and operators in the additive context");
+                }
+
+                var zipped = Enumerable.Zip(multiplicativeStrings, operators.Concat(new[] { "" }), (m, op) => $"{m} {op}");
+                return string.Join(" ", zipped);
+            }
+
+            string BuildCSharpMultiplicative(MultiplicativeContext multiplicative)
+            {
+                var expressionValues = multiplicative.expression_value();
+                var expressionValueStrings = expressionValues.Select(BuildCSharpExpressionValue);
+
+                List<string> operators = new List<string>();
+                foreach (var mul in multiplicative.MUL()) operators.Add(mul.GetText());
+                foreach (var div in multiplicative.DIV()) operators.Add(div.GetText());
+                foreach (var mod in multiplicative.MOD()) operators.Add(mod.GetText());
+
+                if (operators.Count + 1 != expressionValues.Length)
+                {
+                    throw new InvalidOperationException("Mismatch between the number of expression values and operators in the multiplicative context");
+                }
+
+                var zipped = Enumerable.Zip(expressionValueStrings, operators.Concat(new[] { "" }), (ev, op) => $"{ev} {op}");
+                return string.Join(" ", zipped);
+            }
+            
+            string BuildCSharpExpressionValue(Expression_valueContext expressionValue)
+            {
+                if (expressionValue.literal() != null)
+                {
+                    return expressionValue.literal().GetText();
+                }
+
+                if (expressionValue.identifier() != null)
+                {
+                    return expressionValue.identifier().GetText();
+                }
+    
+                if (expressionValue.unary_operation() != null)
+                {
+                    return "!";
+                }
+
+                if (expressionValue.function_call_expression() != null)
+                {
+                    return expressionValue.function_call_expression().GetText();
+                }
+
+                if (expressionValue.element_access_expression() != null)
+                {
+                    return expressionValue.element_access_expression().GetText();
+                }
+
+                if (expressionValue.expression() != null)
+                {
+                    return BuildCSharpExpression(expressionValue.expression());
+                }
+
+                return string.Empty;
+            }
+        }
+
 
         private static void GenerateCSharpForClosedContext<T>(T context, ASTNode node, StringBuilder sb)
         {
@@ -180,6 +316,12 @@ namespace Flow
             var value = ruleContext.GetRuleContext<Variable_valueContext>(0);
             if (value != null)
             {
+                var expression = value.expression();
+                if (expression != null)
+                {
+                    return BuildCSharpExpression(expression);
+                }
+                
                 var valueText = value.GetText();
                 if (valueText.Contains("array"))
                 {

@@ -7,7 +7,7 @@ module Program {
   let Main(args:array[string]) = {
     const n:int = 100;
     var primes:array[bool] = array[bool](n + 1);
-
+    
     for i in 2 -> n {
       primes[i] = true;
     }
@@ -24,6 +24,10 @@ module Program {
       Print(i.string);
     }
     
+    if l > 10 and n / (2 + l) < 10 {
+      Print("The condition is true");
+    }
+    
     TestFunction("Hello", 42, true);
   }
   
@@ -34,6 +38,9 @@ module Program {
   }
   
   let TestNoParams() = {
+    if (l is not m) {
+      Print("l and m are not equal");
+    }
   }
 }
 
