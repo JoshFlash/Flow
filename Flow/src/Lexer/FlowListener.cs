@@ -201,26 +201,6 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFor_statement([NotNull] FlowParser.For_statementContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.range_clause"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterRange_clause([NotNull] FlowParser.Range_clauseContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.range_clause"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitRange_clause([NotNull] FlowParser.Range_clauseContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FlowParser.for_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFor_expression([NotNull] FlowParser.For_expressionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FlowParser.for_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFor_expression([NotNull] FlowParser.For_expressionContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.return_statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -240,6 +220,26 @@ public interface IFlowListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_call_statement([NotNull] FlowParser.Function_call_statementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.range_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRange_clause([NotNull] FlowParser.Range_clauseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.range_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRange_clause([NotNull] FlowParser.Range_clauseContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.for_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFor_expression([NotNull] FlowParser.For_expressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.for_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFor_expression([NotNull] FlowParser.For_expressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.argument_list"/>.
 	/// </summary>

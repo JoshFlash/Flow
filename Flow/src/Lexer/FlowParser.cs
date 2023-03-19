@@ -49,8 +49,8 @@ public partial class FlowParser : Parser {
 		RULE_variable_value = 7, RULE_type = 8, RULE_generic_type = 9, RULE_type_parameter_list = 10, 
 		RULE_type_parameter = 11, RULE_assignment_statement = 12, RULE_print_statement = 13, 
 		RULE_if_statement = 14, RULE_while_statement = 15, RULE_for_statement = 16, 
-		RULE_range_clause = 17, RULE_for_expression = 18, RULE_return_statement = 19, 
-		RULE_function_call_statement = 20, RULE_argument_list = 21, RULE_statement_block = 22, 
+		RULE_return_statement = 17, RULE_function_call_statement = 18, RULE_range_clause = 19, 
+		RULE_for_expression = 20, RULE_argument_list = 21, RULE_statement_block = 22, 
 		RULE_function_declaration = 23, RULE_parameter_list = 24, RULE_parameter = 25, 
 		RULE_unary_operation = 26, RULE_expression = 27, RULE_logical_or = 28, 
 		RULE_logical_and = 29, RULE_equality = 30, RULE_relational = 31, RULE_additive = 32, 
@@ -61,7 +61,7 @@ public partial class FlowParser : Parser {
 		"variable_declaration", "constant_declaration", "variable_value", "type", 
 		"generic_type", "type_parameter_list", "type_parameter", "assignment_statement", 
 		"print_statement", "if_statement", "while_statement", "for_statement", 
-		"range_clause", "for_expression", "return_statement", "function_call_statement", 
+		"return_statement", "function_call_statement", "range_clause", "for_expression", 
 		"argument_list", "statement_block", "function_declaration", "parameter_list", 
 		"parameter", "unary_operation", "expression", "logical_or", "logical_and", 
 		"equality", "relational", "additive", "multiplicative", "expression_value", 
@@ -909,11 +909,11 @@ public partial class FlowParser : Parser {
 	}
 
 	public partial class Type_parameter_listContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public TypeContext[] type() {
-			return GetRuleContexts<TypeContext>();
+		[System.Diagnostics.DebuggerNonUserCode] public Type_parameterContext[] type_parameter() {
+			return GetRuleContexts<Type_parameterContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public TypeContext type(int i) {
-			return GetRuleContext<TypeContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public Type_parameterContext type_parameter(int i) {
+			return GetRuleContext<Type_parameterContext>(i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(FlowParser.COMMA); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
@@ -945,7 +945,7 @@ public partial class FlowParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 176;
-			type();
+			type_parameter();
 			State = 181;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
@@ -955,7 +955,7 @@ public partial class FlowParser : Parser {
 				State = 177;
 				Match(COMMA);
 				State = 178;
-				type();
+				type_parameter();
 				}
 				}
 				State = 183;
@@ -1334,125 +1334,6 @@ public partial class FlowParser : Parser {
 		return _localctx;
 	}
 
-	public partial class Range_clauseContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ARROW() { return GetToken(FlowParser.ARROW, 0); }
-		public Range_clauseContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_range_clause; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IFlowListener typedListener = listener as IFlowListener;
-			if (typedListener != null) typedListener.EnterRange_clause(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IFlowListener typedListener = listener as IFlowListener;
-			if (typedListener != null) typedListener.ExitRange_clause(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public Range_clauseContext range_clause() {
-		Range_clauseContext _localctx = new Range_clauseContext(Context, State);
-		EnterRule(_localctx, 34, RULE_range_clause);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 224;
-			expression();
-			State = 225;
-			Match(ARROW);
-			State = 226;
-			expression();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class For_expressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public IdentifierContext identifier() {
-			return GetRuleContext<IdentifierContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public Range_clauseContext range_clause() {
-			return GetRuleContext<Range_clauseContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public For_expressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_for_expression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IFlowListener typedListener = listener as IFlowListener;
-			if (typedListener != null) typedListener.EnterFor_expression(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IFlowListener typedListener = listener as IFlowListener;
-			if (typedListener != null) typedListener.ExitFor_expression(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public For_expressionContext for_expression() {
-		For_expressionContext _localctx = new For_expressionContext(Context, State);
-		EnterRule(_localctx, 36, RULE_for_expression);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 228;
-			Match(T__14);
-			State = 229;
-			identifier();
-			State = 230;
-			Match(T__15);
-			State = 231;
-			range_clause();
-			State = 234;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			if (_la==T__16) {
-				{
-				State = 232;
-				Match(T__16);
-				State = 233;
-				expression();
-				}
-			}
-
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
 	public partial class Return_statementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMICOLON() { return GetToken(FlowParser.SEMICOLON, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
@@ -1478,24 +1359,24 @@ public partial class FlowParser : Parser {
 	[RuleVersion(0)]
 	public Return_statementContext return_statement() {
 		Return_statementContext _localctx = new Return_statementContext(Context, State);
-		EnterRule(_localctx, 38, RULE_return_statement);
+		EnterRule(_localctx, 34, RULE_return_statement);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 236;
+			State = 224;
 			Match(T__17);
-			State = 238;
+			State = 226;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 2674218443472896L) != 0)) {
 				{
-				State = 237;
+				State = 225;
 				expression();
 				}
 			}
 
-			State = 240;
+			State = 228;
 			Match(SEMICOLON);
 			}
 		}
@@ -1540,29 +1421,148 @@ public partial class FlowParser : Parser {
 	[RuleVersion(0)]
 	public Function_call_statementContext function_call_statement() {
 		Function_call_statementContext _localctx = new Function_call_statementContext(Context, State);
-		EnterRule(_localctx, 40, RULE_function_call_statement);
+		EnterRule(_localctx, 36, RULE_function_call_statement);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 230;
+			identifier();
+			State = 231;
+			Match(LPAREN);
+			State = 233;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 2674218443472896L) != 0)) {
+				{
+				State = 232;
+				argument_list();
+				}
+			}
+
+			State = 235;
+			Match(RPAREN);
+			State = 236;
+			Match(SEMICOLON);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Range_clauseContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ARROW() { return GetToken(FlowParser.ARROW, 0); }
+		public Range_clauseContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_range_clause; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IFlowListener typedListener = listener as IFlowListener;
+			if (typedListener != null) typedListener.EnterRange_clause(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IFlowListener typedListener = listener as IFlowListener;
+			if (typedListener != null) typedListener.ExitRange_clause(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Range_clauseContext range_clause() {
+		Range_clauseContext _localctx = new Range_clauseContext(Context, State);
+		EnterRule(_localctx, 38, RULE_range_clause);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 238;
+			expression();
+			State = 239;
+			Match(ARROW);
+			State = 240;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class For_expressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public IdentifierContext identifier() {
+			return GetRuleContext<IdentifierContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public Range_clauseContext range_clause() {
+			return GetRuleContext<Range_clauseContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public For_expressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_for_expression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IFlowListener typedListener = listener as IFlowListener;
+			if (typedListener != null) typedListener.EnterFor_expression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IFlowListener typedListener = listener as IFlowListener;
+			if (typedListener != null) typedListener.ExitFor_expression(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public For_expressionContext for_expression() {
+		For_expressionContext _localctx = new For_expressionContext(Context, State);
+		EnterRule(_localctx, 40, RULE_for_expression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 242;
-			identifier();
+			Match(T__14);
 			State = 243;
-			Match(LPAREN);
+			identifier();
+			State = 244;
+			Match(T__15);
 			State = 245;
+			range_clause();
+			State = 248;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 2674218443472896L) != 0)) {
+			if (_la==T__16) {
 				{
-				State = 244;
-				argument_list();
+				State = 246;
+				Match(T__16);
+				State = 247;
+				expression();
 				}
 			}
 
-			State = 247;
-			Match(RPAREN);
-			State = 248;
-			Match(SEMICOLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2752,9 +2752,9 @@ public partial class FlowParser : Parser {
 		183,9,10,1,11,1,11,1,12,1,12,1,12,1,12,1,12,3,12,192,8,12,1,12,1,12,1,
 		12,1,12,1,13,1,13,1,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,1,14,3,14,209,
 		8,14,1,15,1,15,1,15,1,15,1,16,1,16,1,16,1,16,1,16,1,16,3,16,221,8,16,1,
-		16,1,16,1,17,1,17,1,17,1,17,1,18,1,18,1,18,1,18,1,18,1,18,3,18,235,8,18,
-		1,19,1,19,3,19,239,8,19,1,19,1,19,1,20,1,20,1,20,3,20,246,8,20,1,20,1,
-		20,1,20,1,21,1,21,1,21,5,21,254,8,21,10,21,12,21,257,9,21,1,22,1,22,5,
+		16,1,16,1,17,1,17,3,17,227,8,17,1,17,1,17,1,18,1,18,1,18,3,18,234,8,18,
+		1,18,1,18,1,18,1,19,1,19,1,19,1,19,1,20,1,20,1,20,1,20,1,20,1,20,3,20,
+		249,8,20,1,21,1,21,1,21,5,21,254,8,21,10,21,12,21,257,9,21,1,22,1,22,5,
 		22,261,8,22,10,22,12,22,264,9,22,1,22,1,22,1,23,1,23,1,23,3,23,271,8,23,
 		1,23,1,23,3,23,275,8,23,1,23,1,23,1,23,1,24,1,24,1,24,1,24,5,24,284,8,
 		24,10,24,12,24,287,9,24,3,24,289,8,24,1,24,1,24,1,25,1,25,1,25,1,25,1,
@@ -2770,7 +2770,7 @@ public partial class FlowParser : Parser {
 		0,0,2,90,1,0,0,0,4,93,1,0,0,0,6,102,1,0,0,0,8,115,1,0,0,0,10,117,1,0,0,
 		0,12,125,1,0,0,0,14,151,1,0,0,0,16,169,1,0,0,0,18,171,1,0,0,0,20,176,1,
 		0,0,0,22,184,1,0,0,0,24,186,1,0,0,0,26,197,1,0,0,0,28,203,1,0,0,0,30,210,
-		1,0,0,0,32,214,1,0,0,0,34,224,1,0,0,0,36,228,1,0,0,0,38,236,1,0,0,0,40,
+		1,0,0,0,32,214,1,0,0,0,34,224,1,0,0,0,36,230,1,0,0,0,38,238,1,0,0,0,40,
 		242,1,0,0,0,42,250,1,0,0,0,44,258,1,0,0,0,46,267,1,0,0,0,48,279,1,0,0,
 		0,50,292,1,0,0,0,52,296,1,0,0,0,54,299,1,0,0,0,56,301,1,0,0,0,58,309,1,
 		0,0,0,60,317,1,0,0,0,62,325,1,0,0,0,64,333,1,0,0,0,66,341,1,0,0,0,68,357,
@@ -2782,8 +2782,8 @@ public partial class FlowParser : Parser {
 		5,44,0,0,96,5,1,0,0,0,97,98,5,2,0,0,98,99,3,74,37,0,99,100,3,8,4,0,100,
 		101,5,40,0,0,101,103,1,0,0,0,102,97,1,0,0,0,102,103,1,0,0,0,103,7,1,0,
 		0,0,104,116,3,12,6,0,105,116,3,10,5,0,106,116,3,24,12,0,107,116,3,26,13,
-		0,108,116,3,28,14,0,109,116,3,30,15,0,110,116,3,32,16,0,111,116,3,38,19,
-		0,112,116,3,40,20,0,113,116,3,44,22,0,114,116,3,46,23,0,115,104,1,0,0,
+		0,108,116,3,28,14,0,109,116,3,30,15,0,110,116,3,32,16,0,111,116,3,34,17,
+		0,112,116,3,36,18,0,113,116,3,44,22,0,114,116,3,46,23,0,115,104,1,0,0,
 		0,115,105,1,0,0,0,115,106,1,0,0,0,115,107,1,0,0,0,115,108,1,0,0,0,115,
 		109,1,0,0,0,115,110,1,0,0,0,115,111,1,0,0,0,115,112,1,0,0,0,115,113,1,
 		0,0,0,115,114,1,0,0,0,116,9,1,0,0,0,117,118,5,3,0,0,118,119,3,74,37,0,
@@ -2802,7 +2802,7 @@ public partial class FlowParser : Parser {
 		170,3,18,9,0,169,153,1,0,0,0,169,154,1,0,0,0,169,155,1,0,0,0,169,156,1,
 		0,0,0,169,161,1,0,0,0,169,168,1,0,0,0,170,17,1,0,0,0,171,172,3,74,37,0,
 		172,173,5,30,0,0,173,174,3,20,10,0,174,175,5,32,0,0,175,19,1,0,0,0,176,
-		181,3,16,8,0,177,178,5,43,0,0,178,180,3,16,8,0,179,177,1,0,0,0,180,183,
+		181,3,22,11,0,177,178,5,43,0,0,178,180,3,22,11,0,179,177,1,0,0,0,180,183,
 		1,0,0,0,181,179,1,0,0,0,181,182,1,0,0,0,182,21,1,0,0,0,183,181,1,0,0,0,
 		184,185,3,74,37,0,185,23,1,0,0,0,186,191,3,74,37,0,187,188,5,41,0,0,188,
 		189,3,54,27,0,189,190,5,42,0,0,190,192,1,0,0,0,191,187,1,0,0,0,191,192,
@@ -2812,17 +2812,17 @@ public partial class FlowParser : Parser {
 		205,3,54,27,0,205,208,3,44,22,0,206,207,5,13,0,0,207,209,3,44,22,0,208,
 		206,1,0,0,0,208,209,1,0,0,0,209,29,1,0,0,0,210,211,5,14,0,0,211,212,3,
 		54,27,0,212,213,3,44,22,0,213,31,1,0,0,0,214,215,5,15,0,0,215,216,3,74,
-		37,0,216,217,5,16,0,0,217,220,3,34,17,0,218,219,5,17,0,0,219,221,3,54,
+		37,0,216,217,5,16,0,0,217,220,3,38,19,0,218,219,5,17,0,0,219,221,3,54,
 		27,0,220,218,1,0,0,0,220,221,1,0,0,0,221,222,1,0,0,0,222,223,3,44,22,0,
-		223,33,1,0,0,0,224,225,3,54,27,0,225,226,5,46,0,0,226,227,3,54,27,0,227,
-		35,1,0,0,0,228,229,5,15,0,0,229,230,3,74,37,0,230,231,5,16,0,0,231,234,
-		3,34,17,0,232,233,5,17,0,0,233,235,3,54,27,0,234,232,1,0,0,0,234,235,1,
-		0,0,0,235,37,1,0,0,0,236,238,5,18,0,0,237,239,3,54,27,0,238,237,1,0,0,
-		0,238,239,1,0,0,0,239,240,1,0,0,0,240,241,5,44,0,0,241,39,1,0,0,0,242,
-		243,3,74,37,0,243,245,5,37,0,0,244,246,3,42,21,0,245,244,1,0,0,0,245,246,
-		1,0,0,0,246,247,1,0,0,0,247,248,5,38,0,0,248,249,5,44,0,0,249,41,1,0,0,
-		0,250,255,3,54,27,0,251,252,5,43,0,0,252,254,3,54,27,0,253,251,1,0,0,0,
-		254,257,1,0,0,0,255,253,1,0,0,0,255,256,1,0,0,0,256,43,1,0,0,0,257,255,
+		223,33,1,0,0,0,224,226,5,18,0,0,225,227,3,54,27,0,226,225,1,0,0,0,226,
+		227,1,0,0,0,227,228,1,0,0,0,228,229,5,44,0,0,229,35,1,0,0,0,230,231,3,
+		74,37,0,231,233,5,37,0,0,232,234,3,42,21,0,233,232,1,0,0,0,233,234,1,0,
+		0,0,234,235,1,0,0,0,235,236,5,38,0,0,236,237,5,44,0,0,237,37,1,0,0,0,238,
+		239,3,54,27,0,239,240,5,46,0,0,240,241,3,54,27,0,241,39,1,0,0,0,242,243,
+		5,15,0,0,243,244,3,74,37,0,244,245,5,16,0,0,245,248,3,38,19,0,246,247,
+		5,17,0,0,247,249,3,54,27,0,248,246,1,0,0,0,248,249,1,0,0,0,249,41,1,0,
+		0,0,250,255,3,54,27,0,251,252,5,43,0,0,252,254,3,54,27,0,253,251,1,0,0,
+		0,254,257,1,0,0,0,255,253,1,0,0,0,255,256,1,0,0,0,256,43,1,0,0,0,257,255,
 		1,0,0,0,258,262,5,39,0,0,259,261,3,8,4,0,260,259,1,0,0,0,261,264,1,0,0,
 		0,262,260,1,0,0,0,262,263,1,0,0,0,263,265,1,0,0,0,264,262,1,0,0,0,265,
 		266,5,40,0,0,266,45,1,0,0,0,267,268,5,19,0,0,268,270,3,74,37,0,269,271,
@@ -2853,7 +2853,7 @@ public partial class FlowParser : Parser {
 		359,360,3,74,37,0,360,362,5,37,0,0,361,363,3,42,21,0,362,361,1,0,0,0,362,
 		363,1,0,0,0,363,364,1,0,0,0,364,365,5,38,0,0,365,71,1,0,0,0,366,367,7,
 		4,0,0,367,73,1,0,0,0,368,369,5,48,0,0,369,75,1,0,0,0,27,81,90,102,115,
-		151,169,181,191,208,220,234,238,245,255,262,270,274,285,288,306,314,322,
+		151,169,181,191,208,220,226,233,248,255,262,270,274,285,288,306,314,322,
 		330,338,346,357,362
 	};
 

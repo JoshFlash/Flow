@@ -54,11 +54,15 @@ namespace Flow
             var importListNode = new ImportListNode("import_list", new List<ASTNode>(), context);
             nodeStack.Peek().Children.Add(importListNode);
             nodeStack.Push(importListNode);
+            
+            CodeGen.GenerateCodeForOpenContext(context, nodeStack.Peek(), stringBuilder, backend);
         }
 
         public override void ExitImport_list([NotNull] Import_listContext context)
         {
-            nodeStack.Pop();
+            var node = nodeStack.Pop();
+            
+            CodeGen.GenerateCodeForClosedContext(context, node, stringBuilder, backend);
         }
 
         public override void EnterImport_statement([NotNull] Import_statementContext context)
@@ -72,7 +76,9 @@ namespace Flow
 
         public override void ExitImport_statement([NotNull] Import_statementContext context)
         {
-            nodeStack.Pop();
+            var node = nodeStack.Pop();
+            
+            CodeGen.GenerateCodeForClosedContext(context, node, stringBuilder, backend);
         }
 
         public override void EnterModule_declaration([NotNull] Module_declarationContext context)
@@ -230,7 +236,7 @@ namespace Flow
 
         public override void EnterFunction_declaration(Function_declarationContext context)
         {
-            var children = new List<ASTNode>();// { identifierNode, parameterListNode, returnTypeNode, body };
+            var children = new List<ASTNode>();
             var functionDeclarationNode = new FunctionDeclarationNode("function_declaration", children, context);
             nodeStack.Peek().Children.Add(functionDeclarationNode);
             nodeStack.Push(functionDeclarationNode);

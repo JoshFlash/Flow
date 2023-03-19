@@ -75,28 +75,20 @@ type: 'int'
     | generic_type;
 
 generic_type: identifier '<' type_parameter_list '>';
-
-type_parameter_list: type (',' type)*;
-
+type_parameter_list: type_parameter (',' type_parameter)*;
 type_parameter: identifier;
 
 assignment_statement: identifier ('[' expression ']')? '=' expression ';';
-
 print_statement: 'Print' '(' expression ')' ';';
-
 if_statement: 'if' expression statement_block ( 'else' statement_block )?;
-
 while_statement: 'while' expression statement_block;
-
 for_statement: 'for' identifier 'in' range_clause ('where' expression)? statement_block;
+return_statement: 'return' expression? ';';
+function_call_statement: identifier '(' argument_list? ')' ';';
 
 range_clause: expression ARROW expression;
 
 for_expression: 'for' identifier 'in' range_clause ('where' expression)?;
-
-return_statement: 'return' expression? ';';
-
-function_call_statement: identifier '(' argument_list? ')' ';';
 
 argument_list: expression (',' expression)*;
 
@@ -111,17 +103,11 @@ parameter: identifier ':' type;
 unary_operation: NOT expression;
 
 expression: logical_or;
-
 logical_or: logical_and (OR logical_and)*;
-
 logical_and: equality (AND equality)*;
-
 equality: relational ((EQ | NEQ) relational)*;
-
 relational: additive ((LT | LTE | GT | GTE) additive)*;
-
 additive: multiplicative ((ADD | SUB) multiplicative)*;
-
 multiplicative: expression_value ((MUL | DIV | MOD) expression_value)*;
 
 expression_value: literal
