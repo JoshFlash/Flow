@@ -132,7 +132,7 @@ namespace Flow
                     string loopVariable = forStatement.identifier().GetText();
                     if (forStatement.expression() != null)
                     {
-                        queuedExpressions.Enqueue(forStatement.expression().GetText());
+                        queuedExpressions.Enqueue(forStatement.expression().ToCSharpExpression());
                     }
                     
                     sb.AppendLine(
@@ -155,6 +155,13 @@ namespace Flow
                     sb.AppendLine($"{elementStatement.element_access_expression().identifier().GetText()}" +
                                   $"[{elementStatement.element_access_expression().expression().ToCSharpExpression()}]" +
                                   $" = {elementStatement.expression().ToCSharpExpression()}");
+                    break;
+                
+                case Unary_operationContext unaryOp:
+                case Function_call_statementContext funStatement:
+                case Function_call_expressionContext funExpression:
+                case Return_statementContext returnStatement:
+                    //TODO if necessary
                     break;
             }
         }
