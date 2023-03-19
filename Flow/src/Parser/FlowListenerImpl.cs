@@ -369,6 +369,22 @@ namespace Flow
             
             CodeGen.GenerateCodeForClosedContext(context, node, stringBuilder, backend);
         }
+
+        public override void EnterElement_assignment_statement(Element_assignment_statementContext context)
+        {
+            var assignmentStatementNode = new ElementAssignmentStatementNode("element_assignment_statement", new List<ASTNode>(), context);
+            nodeStack.Peek().Children.Add(assignmentStatementNode);
+            nodeStack.Push(assignmentStatementNode);
+            
+            CodeGen.GenerateCodeForOpenContext(context, nodeStack.Peek(), stringBuilder, backend);
+        }
+        
+        public override void ExitElement_assignment_statement(Element_assignment_statementContext context)
+        {
+            var node = nodeStack.Pop();
+            
+            CodeGen.GenerateCodeForClosedContext(context, node, stringBuilder, backend);
+        }
         
         public override void EnterReturn_statement([NotNull] Return_statementContext context)
         {

@@ -161,6 +161,16 @@ public interface IFlowListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitAssignment_statement([NotNull] FlowParser.Assignment_statementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.element_assignment_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterElement_assignment_statement([NotNull] FlowParser.Element_assignment_statementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.element_assignment_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitElement_assignment_statement([NotNull] FlowParser.Element_assignment_statementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.print_statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

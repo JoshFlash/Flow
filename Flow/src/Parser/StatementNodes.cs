@@ -227,6 +227,27 @@ namespace Flow
         }
     }
     
+        
+    public class ElementAssignmentStatementNode : StatementNode
+    {
+        public ElementAssignmentStatementNode(string text, List<ASTNode> children, Element_assignment_statementContext context)
+            : base(text, children, context)
+        {
+        }
+
+        public override void Accept(IFlowListener listener)
+        {
+            var context = Context as Element_assignment_statementContext;
+            listener.EnterElement_assignment_statement(context);
+            foreach (var child in Children)
+            {
+                child.Accept(listener);
+            }
+
+            listener.ExitElement_assignment_statement(context);
+        }
+    }
+    
     public class ReturnStatementNode : StatementNode
     {
         public ReturnStatementNode(string text, List<ASTNode> children, Return_statementContext context)

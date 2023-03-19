@@ -3,6 +3,7 @@ import Math;
 
 module Program {
   const l:int = 11;
+  var m:int = 42;
 
   let Main(args:array[string]) = {
     const n:int = 100;
@@ -24,11 +25,12 @@ module Program {
       Print(i.string);
     }
     
-    if l > 10 and n / (2 + l) < 10 {
+    if not (l > 10 and n / (2 + l) < 10) {
       Print("The condition is true");
     }
     
     TestFunction("Hello", 42, true);
+    TestNoParams();
   }
   
   let TestFunction(str: string, num: int, flag: bool) = {

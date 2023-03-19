@@ -192,6 +192,18 @@ public partial class FlowBaseListener : IFlowListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAssignment_statement([NotNull] FlowParser.Assignment_statementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FlowParser.element_assignment_statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterElement_assignment_statement([NotNull] FlowParser.Element_assignment_statementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FlowParser.element_assignment_statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitElement_assignment_statement([NotNull] FlowParser.Element_assignment_statementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FlowParser.print_statement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

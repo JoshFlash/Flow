@@ -40,6 +40,11 @@ namespace Flow
             }
         }
 
+        public static string TestExtensionCtx(this string[] context)
+        {
+            return context[0];
+        }
+
         private static void GenerateCSharpForOpenContext<T>(T context, ASTNode node, StringBuilder sb)
             where T : ParserRuleContext
         {
@@ -77,13 +82,13 @@ namespace Flow
                     break;
                                 
                 case Print_statementContext print:
-                    sb.AppendLine($"Console.WriteLine({print.expression().GetText()})");
+                    sb.AppendLine($"Console.WriteLine({print.expression().ToCSharpExpression()}.ToString())");
                     break;
                 
                 case Constant_declarationContext constant:
                     string q = "";
                     if (node.HasParent<Statement_blockContext>() && !node.HasParent<Function_declarationContext>())
-                        q = " public static";
+                        q = " public";
                     sb.Append($"{q} const {GetTypeTextCSharp(constant.type())} {constant.identifier().GetText()} = " +
                               $"{GetValueTextCsharp(constant)}");
                     break;
@@ -107,12 +112,12 @@ namespace Flow
                 
                 case Function_declarationContext functionDecl:
                     var typeString = functionDecl.type() != null ? functionDecl.type()?.GetText() : "void";
-                    sb.AppendLine($"public {typeString} {functionDecl.identifier().GetText()}");
+                    sb.AppendLine($"public static {typeString} {functionDecl.identifier().GetText()}");
                     if (functionDecl.parameter_list() == null) sb.Append("()");
                     break;
                 
                 case Parameter_listContext parameterList:
-                    string parameterText = "";
+                    string parameterText = parameterList.parameter().Length > 0 ? "this " : "";
                     foreach (var paramCtx in parameterList.parameter())
                     {
                         parameterText += $"{GetTypeTextCSharp(paramCtx.type())} {paramCtx.identifier().GetText()},";
@@ -135,12 +140,26 @@ namespace Flow
                     break;
 
                 case If_statementContext ifStatement:
-                    sb.Append($"if ({BuildCSharpExpression(ifStatement.expression())})");
+                    sb.Append($"if ({ifStatement.expression().ToCSharpExpression()})");
+                    break;
+                
+                case While_statementContext whileStatement:
+                    sb.AppendLine($"while ({whileStatement.expression().ToCSharpExpression()})");
+                    break;
+                
+                case Assignment_statementContext assignStatement:
+                    sb.AppendLine($"{assignStatement.identifier().GetText()} = {assignStatement.expression().ToCSharpExpression()}");
+                    break;
+                
+                case Element_assignment_statementContext elementStatement:
+                    sb.AppendLine($"{elementStatement.element_access_expression().identifier().GetText()}" +
+                                  $"[{elementStatement.element_access_expression().expression().ToCSharpExpression()}]" +
+                                  $" = {elementStatement.expression().ToCSharpExpression()}");
                     break;
             }
         }
 
-        private static string BuildCSharpExpression(ExpressionContext expressionContext)
+        private static string ToCSharpExpression(this ExpressionContext expressionContext)
         {
             var root = expressionContext.logical_or();
             return BuildCSharpLogicalOr(root);
@@ -174,7 +193,9 @@ namespace Flow
                 }
 
                 var zipped = Enumerable.Zip(relationalStrings, operators.Concat(new[] { "" }), (r, op) => $"{r} {op}");
-                return string.Join(" ", zipped).Replace("is","==");
+                
+                //todo - resolve this hack for unary - it works well enough for now apart from when it changes string literals
+                return string.Join(" ", zipped).Replace("is not","!=").Replace("is","==");
             }
 
             string BuildCSharpRelational(RelationalContext relational)
@@ -248,7 +269,7 @@ namespace Flow
     
                 if (expressionValue.unary_operation() != null)
                 {
-                    return "!";
+                    return $"!({expressionValue.unary_operation().expression().ToCSharpExpression()})";
                 }
 
                 if (expressionValue.function_call_expression() != null)
@@ -263,7 +284,7 @@ namespace Flow
 
                 if (expressionValue.expression() != null)
                 {
-                    return BuildCSharpExpression(expressionValue.expression());
+                    return expressionValue.expression().ToCSharpExpression();
                 }
 
                 return string.Empty;
@@ -290,6 +311,8 @@ namespace Flow
                 case Constant_declarationContext constant:
                 case Variable_declarationContext variable:
                 case Print_statementContext print:
+                case Assignment_statementContext assign:
+                case Element_assignment_statementContext element:
                     sb.Append(";\n ");
                     break;
 
@@ -316,24 +339,29 @@ namespace Flow
             var value = ruleContext.GetRuleContext<Variable_valueContext>(0);
             if (value != null)
             {
+                var valueText = value.GetText();
+                if (value.type(0) != null && (value.type(1) != null || value.expression() != null))
+                {
+                    if (valueText.Contains("array") && value.type() != null)
+                    {
+                        return $"new {value.type(0).GetText()}[{value.expression().ToCSharpExpression()}]";
+                    }
+
+                    if (valueText.Contains("map"))
+                    {
+                        return $"new Dictionary<{value.type(0).GetText()},{value.type(1).GetText()}]";
+                    }
+
+                    if (value.expression() != null)
+                    {
+                        return value.expression().ToCSharpExpression();
+                    }
+                }
+                
                 var expression = value.expression();
                 if (expression != null)
                 {
-                    return BuildCSharpExpression(expression);
-                }
-                
-                var valueText = value.GetText();
-                if (valueText.Contains("array"))
-                {
-                    return $"new {value.type(0).GetText()}[{value.expression().GetText()}]";
-                }
-                if (valueText.Contains("map"))
-                {
-                    return $"new Dictionary<{value.type(0).GetText()},{value.type(1).GetText()}]";
-                }
-                if (value.expression() != null)
-                {
-                    return value.expression().GetText();
+                    return expression.ToCSharpExpression();
                 }
 
                 return value.GetText();

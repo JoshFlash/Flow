@@ -58,7 +58,8 @@ statement: constant_declaration
          | return_statement
          | function_call_statement
          | statement_block
-         | function_declaration;
+         | function_declaration
+         | element_assignment_statement;
 
 variable_declaration: 'var' identifier ':' type '=' variable_value ';';
 constant_declaration: 'const' identifier ':' type '=' variable_value ';';
@@ -78,7 +79,9 @@ generic_type: identifier '<' type_parameter_list '>';
 type_parameter_list: type_parameter (',' type_parameter)*;
 type_parameter: identifier;
 
-assignment_statement: identifier ('[' expression ']')? '=' expression ';';
+assignment_statement: identifier '=' expression ';';
+element_assignment_statement: element_access_expression '=' expression ';';
+
 print_statement: 'Print' '(' expression ')' ';';
 if_statement: 'if' expression statement_block ( 'else' statement_block )?;
 while_statement: 'while' expression statement_block;
